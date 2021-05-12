@@ -1,3 +1,10 @@
+# checkpoints
+checkpoints/*
+
+# video files
+*.mp4
+*.avi
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -7,6 +14,8 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+.qt_for_python/
+.pytest_cache
 .Python
 build/
 develop-eggs/
