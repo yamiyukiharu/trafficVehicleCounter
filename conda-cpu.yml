@@ -1,15 +1,18 @@
-name: yolov4-cpu
+name: trafficVehicleCounter-cpu
 
 dependencies:
-  - python==3.7
+  - python==3.8.5
   - pip
   - matplotlib
-  - opencv
+  - scipy
   - pip:
-    - opencv-python==4.1.1.26
+    - opencv-python
+    - PySide2==5.15
+    - pyqtgraph
+    - qtmodern
     - lxml
     - tqdm
-    - tensorflow==2.3.0rc0
     - absl-py
     - easydict
     - pillow
+    - h5py

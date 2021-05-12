@@ -19,4 +19,5 @@
             },
         ]
     },
+    "python.pythonPath": "/Users/haoye/opt/anaconda3/envs/trafficVehicleCounter-gpu/bin/python",
 }

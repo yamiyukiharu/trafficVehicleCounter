@@ -5,7 +5,7 @@ from PySide2.QtGui import QImage, QPixmap, Qt, QIcon
 from PySide2.QtMultimedia import QMediaPlayer, QMediaContent
 from qt.Ui_Form import Ui_Form
 import numpy as np
-import cv2
+import cv2, os
 
 class ViewController(QWidget, Ui_Form):
     startInferenceSignal = Signal()
@@ -27,8 +27,9 @@ class ViewController(QWidget, Ui_Form):
 
         self.setupSignalSlots()
         # development
-        self.setVideo('./data/video/VehicleTest.mp4')
-        self.setCacheData('./outputs/data.h5')
+        
+        self.setVideo(os.getcwd() + '/data/video/VehicleTest.mp4')
+        self.setCacheData(os.getcwd() + '/outputs/data.h5')
 
     def setupSignalSlots(self):
         self.loadVideoBtn.clicked.connect(self.openVideoFile)
