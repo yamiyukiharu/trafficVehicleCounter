@@ -115,7 +115,7 @@ class Ui_Form(object):
 
         self.frameSlider = QSlider(self.analysisPage)
         self.frameSlider.setObjectName(u"frameSlider")
-        self.frameSlider.setEnabled(False)
+        self.frameSlider.setEnabled(True)
         self.frameSlider.setOrientation(Qt.Horizontal)
 
         self.horizontalLayout_5.addWidget(self.frameSlider)

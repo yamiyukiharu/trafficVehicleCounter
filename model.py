@@ -17,6 +17,13 @@ iou_thresh = 0.45
 score_thresh = 0.7
 input_size = 416
 
+class_id_map = {
+    'none'  : '0',
+    'truck' : '1',
+    'car'   : '2'
+}
+class_id_map.update({item[1]: item[0] for item in class_id_map.items()})
+
 class Model(QObject):
     frame_update_signal = Signal(np.ndarray, int)
     max_frame_update_signal = Signal(int)
@@ -30,10 +37,16 @@ class Model(QObject):
         self.input_video_path = ''
         self.output_video_path = ''
         self.output_data_path = ''
+        self.cache_data = None
         self.vid = None
+
+        #initialize color map
+        cmap = plt.get_cmap('tab20b')
+        self.colors = [cmap(i)[:3] for i in np.linspace(0, 1, 20)]
 
     def setInputVideoPath(self, path):
         self.input_video_path = path
+        self.vid = cv2.VideoCapture(self.input_video_path)
 
     def setOutputVideoPath(self, path):
         self.output_video_path = path
@@ -43,6 +56,13 @@ class Model(QObject):
 
     def setCacheDataPath(self, path):
         self.cache_data_path = path
+
+        # parse cache data and send signal with max frame num
+        cache = h5py.File(self.cache_data_path, 'r')
+        cache_data = cache.get('dataset_1')
+        self.cache_data = np.array(cache_data)
+
+        self.max_frame_update_signal.emit(self.cache_data.shape[0])
 
     def stopInference(self):
         self.stop_inference = True
@@ -96,28 +116,61 @@ class Model(QObject):
                 tracker_dict[uid]['counted'] = True
                 return True
 
+    def validateInputFiles(self) -> bool:
+        if self.cache_data is None:
+            self.error_signal.emit('Cache data not specified!')
+            return False
+        elif self.vid is None:
+            self.error_signal.emit('No input video specified')
+            return False
+        else:
+            return True
+
+    @Slot(int)
+    def previewFrame(self, frame_num):
+        if not self.validateInputFiles():
+            return
+
+        # go to specified frame
+        self.vid.set(cv2.CAP_PROP_POS_FRAMES, frame_num)
+        _, frame = self.vid.read()
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+
+        # draw bb box 
+        for detection in self.cache_data[frame_num]:
+            class_name = self.getClassName(str(detection[0]))
+            uid = detection[1]
+            x_min = detection[2]
+            y_min = detection[3]
+            x_max = detection[4]
+            y_max = detection[5]
+
+            frame = self.drawBoundingBox(frame, class_name, uid, x_min, y_min, x_max, y_max)
+
+        # draw counting annotation
+
+        # update frame signal
+        self.frame_update_signal.emit(frame, frame_num)
+
     @Slot()
     def startCounting(self):
-        self.vid = cv2.VideoCapture(self.input_video_path)
+        if not self.validateInputFiles():
+            return
+
         total_frames = int(self.vid.get(cv2.CAP_PROP_FRAME_COUNT))
         
         # tally total frame num in cahce data and video
-        cache_data = h5py.File(self.cache_data_path, 'r')
-        cache = cache_data.get('dataset_1')
-        cache = np.array(cache)
-        
-        if total_frames != cache.shape[0]:
+        if total_frames != self.cache_data.shape[0]:
             self.error_signal.emit('Video and cache frame count does not match')
             return
-
-        self.max_frame_update_signal.emit(total_frames)
 
         cars = {}
         trucks = {}
         car_cnt = 0
         truck_cnt = 0
 
-        for frame_num, frame_data in enumerate(cache):
+        for frame_num, frame_data in enumerate(self.cache_data):
             _, frame = self.vid.read()
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             # self.frame_update_signal.emit(frame, frame_num)
@@ -157,8 +210,21 @@ class Model(QObject):
         img = frame[y_min:y_max, x_min:x_max]
         return np.ascontiguousarray(img)
 
+    def getClassId(self, class_name:str) -> int:
+        id = class_id_map.get(class_name)
+        if id is None:
+            id = 0
+        return id
+
+    def getClassName(self, class_id:int) -> str:
+        name =  class_id_map.get(class_id)
+        return name
+
     @Slot()
     def startInference(self):
+        if not self.validateInputFiles():
+            return
+
         self.stop_inference = False
 
         import tensorflow as tf
@@ -193,7 +259,6 @@ class Model(QObject):
         infer = saved_model_loaded.signatures['serving_default']
 
         # begin video capture
-        self.vid = cv2.VideoCapture(self.input_video_path)
         total_frames = int(self.vid.get(cv2.CAP_PROP_FRAME_COUNT))
         self.max_frame_update_signal.emit(total_frames)
 
@@ -283,10 +348,6 @@ class Model(QObject):
             features = encoder(frame, bboxes)
             detections = [Detection(bbox, score, class_name, feature) for bbox, score, class_name, feature in zip(bboxes, scores, names, features)]
 
-            #initialize color map
-            cmap = plt.get_cmap('tab20b')
-            colors = [cmap(i)[:3] for i in np.linspace(0, 1, 20)]
-
             # run non-maxima supression
             boxs = np.array([d.tlwh for d in detections])
             scores = np.array([d.confidence for d in detections])
@@ -306,21 +367,19 @@ class Model(QObject):
                 bbox = track.to_tlbr()
                 class_name = track.get_class()
                 
+                x_min = int(bbox[0])
+                y_min = int(bbox[1])
+                x_max = int(bbox[2])
+                y_max = int(bbox[3])
+                id = int(track.track_id)
+
                 # add to hdf buffer
-                class_id = 0
-                if class_name == 'truck':
-                    class_id = 1
-                elif class_name == 'car':
-                    class_id = 2
-                frame_data[obj_num] = [class_id, int(track.track_id), int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])]
+                class_id = self.getClassId(class_name)
+                frame_data[obj_num] = [class_id, id, x_min, y_min, x_max, y_max]
                 obj_num = obj_num + 1
 
                 # draw bbox on screen
-                color = colors[int(track.track_id) % len(colors)]
-                color = [i * 255 for i in color]
-                cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), color, 2)
-                cv2.rectangle(frame, (int(bbox[0]), int(bbox[1]-30)), (int(bbox[0])+(len(class_name)+len(str(track.track_id)))*17, int(bbox[1])), color, -1)
-                cv2.putText(frame, class_name + "-" + str(track.track_id),(int(bbox[0]), int(bbox[1]-10)),0, 0.75, (255,255,255),2)
+                frame = self.drawBoundingBox(frame, class_name, id, x_min, y_min, x_max, y_max)
 
             result = np.asarray(frame)
             result = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
@@ -342,8 +401,10 @@ class Model(QObject):
 
         self.process_done_signal.emit()
 
-    def previewFrame(self, frame_num):
-        # go to specific frame
-        if self.vid is not None:
-            self.vid.set(cv2.CAP_PROP_POS_FRAMES, frame_num)
-            _, frame = self.vid.read()
+    def drawBoundingBox(self, frame, class_name:str, id:int, x_min, y_min, x_max, y_max ):
+        color = self.colors[id % len(self.colors)]
+        color = [i * 255 for i in color]
+        cv2.rectangle(frame, (x_min, y_min), (x_max, y_max), color, 2)
+        cv2.rectangle(frame, (x_min, y_min-30), (x_min+(len(class_name)+len(str(id)) )*17, y_min), color, -1)
+        cv2.putText(frame, class_name + "-" + str(id),(x_min, int(y_min-10)),0, 0.75, (255,255,255),2)
+        return frame
