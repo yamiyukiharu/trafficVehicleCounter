@@ -20,7 +20,8 @@ input_size = 416
 class_id_map = {
     'none'  : '0',
     'truck' : '1',
-    'car'   : '2'
+    'car'   : '2',
+    'bus'   : '3'
 }
 class_id_map.update({item[1]: item[0] for item in class_id_map.items()})
 

@@ -1,11 +1,12 @@
 
-from PySide2.QtCore import QUrl, Signal, Slot
+from PySide2.QtCore import QPoint, QUrl, Signal, Slot
 from PySide2.QtWidgets import QFileDialog, QMessageBox, QTableWidgetItem, QWidget
 from PySide2.QtGui import QImage, QPixmap, Qt, QIcon
 from PySide2.QtMultimedia import QMediaPlayer, QMediaContent
 from qt.Ui_Form import Ui_Form
 import numpy as np
-import cv2, os
+import cv2, os, math
+import pyqtgraph as pg
 
 class ViewController(QWidget, Ui_Form):
     startInferenceSignal = Signal()
@@ -24,6 +25,12 @@ class ViewController(QWidget, Ui_Form):
         self.mediaPlayer.setVideoOutput(self.videoFrame)
         self.carPreviewTable.setHorizontalHeaderLabels(['Preview', 'ID'])
         self.truckPreviewTable.setHorizontalHeaderLabels(['Preview', 'ID'])
+        self.frameView.ui.histogram.hide()
+        self.frameView.ui.roiBtn.hide()
+        self.frameView.ui.menuBtn.hide()
+        self.frameView.view.setMouseEnabled(False,False)
+        self.visualizeMarker = pg.LineSegmentROI(positions=[(0,0), (0,0)])
+
 
         self.setupSignalSlots()
         # development
@@ -52,6 +59,8 @@ class ViewController(QWidget, Ui_Form):
         self.model.process_done_signal.connect(self.onProcessDone)
 
         self.frameSlider.valueChanged.connect(self.model.previewFrame)
+        self.visualizeBtn.clicked.connect(self.visualizeCountingParam)
+        self.visualizeMarker.sigRegionChangeFinished.connect(self.updateCountingParams)
 
 #====================== File Dialog Functions =====================
 
@@ -130,6 +139,41 @@ class ViewController(QWidget, Ui_Form):
 
 #================= Vehicle Counting Functions =========================
 
+    def visualizeCountingParam(self):
+        # add arrow with length defined in distance
+        cx = 500
+        cy = 500
+        dx = self.xFilterVectorSpn.value() / 2
+        hypo = self.distFilterSpn.value()/ 2
+        dy = math.sqrt(hypo*hypo - dx*dx)
+        if self.yFilterVectorSpn.value() < 0:
+            dy = -dy
+        pos_start = QPoint(cx - abs(dx), cy - dy)
+        pos_end = QPoint(cx + abs(dx), cy + dy )
+
+        
+        self.visualizeMarker.handles[0]['item'].setPos(pos_start)
+        self.visualizeMarker.handles[1]['item'].setPos(pos_end)
+        self.frameView.addItem(self.visualizeMarker)
+
+    def updateCountingParams(self):
+        positions = self.visualizeMarker.getSceneHandlePositions()
+        start = positions[0][1]
+        end = positions[1][1]
+
+        # convert to image coordinate system
+        start = self.frameView.getView().mapSceneToView(start)
+        start = self.frameView.getView().mapFromViewToItem(self.frameView.imageItem, start)
+
+        end = self.frameView.getView().mapSceneToView(end)
+        end = self.frameView.getView().mapFromViewToItem(self.frameView.imageItem, end)
+
+        # calculate filter distance from line length
+
+        # calculate x & y filter values from line vector
+
+        print(start)
+
     def startCounting(self):
         if self.cacheDataFile != '':
             self.prepareforAnalysis()
@@ -170,6 +214,14 @@ class ViewController(QWidget, Ui_Form):
 
     def prepareforAnalysis(self):
         # set parameters
+        self.model.setCountingFilter(
+            {
+                'x_vect': self.xFilterVectorSpn.value(),
+                'y_vect': self.yFilterVectorSpn.value(),
+                'dist'  : self.distFilterSpn.value(),
+                'frames': self.skipFrameFilterSpn.value()
+            }
+        )
 
         # change video display to frames updated by Qlabel
         self.videoSwitcher.setCurrentIndex(1)
@@ -193,9 +245,13 @@ class ViewController(QWidget, Ui_Form):
 
     @Slot(np.ndarray, int)
     def updateFrame(self, cv_img, frame_num):
-        """Updates the image_label with a new opencv image"""
-        qt_img = self.convert_cv_qt(cv_img, self.frameLabel.width(), self.frameLabel.height())
-        self.frameLabel.setPixmap(qt_img)
+        # """Updates the image_label with a new opencv image"""
+        # qt_img = self.convert_cv_qt(cv_img, self.frameLabel.width(), self.frameLabel.height())
+        # self.frameLabel.setPixmap(qt_img)
+        self.frameView.setImage(cv_img)
+        # self.frameView.view.setAspectLocked(False)
+        self.frameView.view.setXRange(0, cv_img.shape[1])
+        self.frameView.view.setYRange(0, cv_img.shape[0])
         self.frameSlider.setSliderPosition(frame_num)
         self.frameNum.setText(str(frame_num))
     

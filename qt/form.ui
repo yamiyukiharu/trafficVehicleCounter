@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1103</width>
-    <height>814</height>
+    <height>813</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,10 +30,22 @@
      </property>
      <item>
       <widget class="QTabWidget" name="videoSwitcher">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="videoPlaybackPage">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <attribute name="title">
          <string>Playback</string>
         </attribute>
@@ -41,7 +53,7 @@
          <item>
           <widget class="QVideoWidget" name="videoFrame" native="true">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -117,20 +129,23 @@
         </layout>
        </widget>
        <widget class="QWidget" name="analysisPage">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <attribute name="title">
          <string>Analysis</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
-          <widget class="QLabel" name="frameLabel">
+          <widget class="ImageView" name="frameView" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
-           </property>
-           <property name="text">
-            <string/>
            </property>
           </widget>
          </item>
@@ -228,6 +243,13 @@
             </property>
            </widget>
           </item>
+          <item row="3" column="1">
+           <widget class="QToolButton" name="loadCacheBtn">
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="1">
            <widget class="QLineEdit" name="inputVideoFileLabel"/>
           </item>
@@ -245,26 +267,6 @@
            <widget class="QLabel" name="label_10">
             <property name="text">
              <string>Cache Data:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="3" column="1">
-           <widget class="QToolButton" name="loadCacheBtn">
-            <property name="text">
-             <string>...</string>
             </property>
            </widget>
           </item>
@@ -384,15 +386,29 @@
           <property name="spacing">
            <number>2</number>
           </property>
-          <item row="0" column="0">
+          <item row="1" column="3">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>Y:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>X:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
            <widget class="QLabel" name="label_4">
             <property name="text">
              <string>Filter Vector (pixels)</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QDoubleSpinBox" name="doubleSpinBox">
+          <item row="1" column="2">
+           <widget class="QDoubleSpinBox" name="xFilterVectorSpn">
             <property name="decimals">
              <number>0</number>
             </property>
@@ -407,8 +423,8 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="2">
-           <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+          <item row="1" column="4">
+           <widget class="QDoubleSpinBox" name="yFilterVectorSpn">
             <property name="decimals">
              <number>0</number>
             </property>
@@ -423,46 +439,47 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <widget class="QLabel" name="label_5">
             <property name="text">
              <string>Travel Distance (pixels)</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="label_6">
             <property name="text">
              <string>Max Skipped Frames</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QSpinBox" name="spinBox_2"/>
-          </item>
-          <item row="2" column="1">
-           <widget class="QSpinBox" name="spinBox"/>
-          </item>
-          <item row="0" column="3">
-           <widget class="QCheckBox" name="checkBox">
-            <property name="text">
-             <string>Visualize</string>
+          <item row="2" column="2">
+           <widget class="QSpinBox" name="distFilterSpn">
+            <property name="maximum">
+             <number>1000</number>
             </property>
            </widget>
           </item>
-          <item row="1" column="3">
-           <widget class="QCheckBox" name="checkBox_2">
-            <property name="text">
-             <string>Visualize</string>
-            </property>
-           </widget>
+          <item row="3" column="2">
+           <widget class="QSpinBox" name="skipFrameFilterSpn"/>
           </item>
-          <item row="3" column="1">
-           <widget class="QPushButton" name="countBtn">
-            <property name="text">
-             <string>Count</string>
-            </property>
-           </widget>
+          <item row="4" column="0" colspan="5">
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QPushButton" name="countBtn">
+              <property name="text">
+               <string>Count Offline</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="visualizeBtn">
+              <property name="text">
+               <string>Visualize</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -555,6 +572,12 @@
      </item>
      <item>
       <widget class="QTabWidget" name="previewTabWidget">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimumSize">
         <size>
          <width>220</width>
@@ -736,6 +759,12 @@
    <class>QVideoWidget</class>
    <extends>QWidget</extends>
    <header>PySide2.QtMultimediaWidgets</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ImageView</class>
+   <extends>QWidget</extends>
+   <header>pyqtgraph</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
