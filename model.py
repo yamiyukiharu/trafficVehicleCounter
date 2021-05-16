@@ -65,6 +65,12 @@ class Model(QObject):
 
         self.max_frame_update_signal.emit(self.cache_data.shape[0])
 
+    def setCountingFilter(self, params:dict):
+        self.filt_x_vec = params['x_vect']
+        self.filt_y_vec = params['y_vect']
+        self.filt_dist = params['dist']
+        self.filt_frame = params['frames']
+
     def stopInference(self):
         self.stop_inference = True
 
@@ -97,7 +103,7 @@ class Model(QObject):
             return False
         
         # reset distance travelled if previous detected frame is too far off
-        elif frame_num - tracker_dict[uid]['prev_frame_num'] > 10:
+        elif frame_num - tracker_dict[uid]['prev_frame_num'] > self.filt_frame:
             tracker_dict[uid]['prev_centroid'] = centroid
 
         # compute distance traveled
@@ -107,7 +113,7 @@ class Model(QObject):
         tracker_dict[uid]['prev_frame_num'] = frame_num
 
         # count the object if distance traveled exceeds a threshold
-        if tracker_dict[uid]['dist'] > 500:
+        if tracker_dict[uid]['dist'] > self.filt_dist:
             # computer direction vector
             initial_centroid = tracker_dict[uid]['initial_centroid']
             vect = [cx - initial_centroid[0], cy - initial_centroid[1]]
@@ -165,6 +171,9 @@ class Model(QObject):
         if total_frames != self.cache_data.shape[0]:
             self.error_signal.emit('Video and cache frame count does not match')
             return
+
+        # go to first frame
+        self.vid.set(cv2.CAP_PROP_POS_FRAMES, 0)
 
         cars = {}
         trucks = {}

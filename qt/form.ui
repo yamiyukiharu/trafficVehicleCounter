@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1103</width>
-    <height>813</height>
+    <height>731</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -386,24 +386,10 @@
           <property name="spacing">
            <number>2</number>
           </property>
-          <item row="1" column="3">
-           <widget class="QLabel" name="label_12">
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_6">
             <property name="text">
-             <string>Y:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLabel" name="label_11">
-            <property name="text">
-             <string>X:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Filter Vector (pixels)</string>
+             <string>Max Skipped Frames</string>
             </property>
            </widget>
           </item>
@@ -423,47 +409,14 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="4">
-           <widget class="QDoubleSpinBox" name="yFilterVectorSpn">
-            <property name="decimals">
-             <number>0</number>
-            </property>
-            <property name="minimum">
-             <double>-1000.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>1000.000000000000000</double>
-            </property>
-            <property name="value">
-             <double>-5.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_5">
+          <item row="1" column="3">
+           <widget class="QLabel" name="label_12">
             <property name="text">
-             <string>Travel Distance (pixels)</string>
+             <string>Y:</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>Max Skipped Frames</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QSpinBox" name="distFilterSpn">
-            <property name="maximum">
-             <number>1000</number>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2">
-           <widget class="QSpinBox" name="skipFrameFilterSpn"/>
-          </item>
-          <item row="4" column="0" colspan="5">
+          <item row="5" column="0" colspan="5">
            <layout class="QHBoxLayout" name="horizontalLayout_6">
             <item>
              <widget class="QPushButton" name="countBtn">
@@ -480,6 +433,77 @@
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="4" column="2">
+           <widget class="QSpinBox" name="skipFrameFilterSpn">
+            <property name="value">
+             <number>10</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
+           <widget class="QDoubleSpinBox" name="yFilterVectorSpn">
+            <property name="decimals">
+             <number>0</number>
+            </property>
+            <property name="minimum">
+             <double>-1000.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>1000.000000000000000</double>
+            </property>
+            <property name="value">
+             <double>-5.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QSpinBox" name="distFilterSpn">
+            <property name="maximum">
+             <number>1000</number>
+            </property>
+            <property name="value">
+             <number>500</number>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_14">
+            <property name="text">
+             <string>Filter Vector Width</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Travel Distance (pixels)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Filter Vector (pixels)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>X:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QSpinBox" name="widthFilterVectorSpn">
+            <property name="maximum">
+             <number>1000</number>
+            </property>
+            <property name="value">
+             <number>200</number>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -616,18 +640,18 @@
             <number>2</number>
            </property>
            <attribute name="horizontalHeaderVisible">
-            <bool>false</bool>
-           </attribute>
-           <attribute name="horizontalHeaderDefaultSectionSize">
-            <number>110</number>
+            <bool>true</bool>
            </attribute>
            <attribute name="horizontalHeaderMinimumSectionSize">
             <number>110</number>
            </attribute>
-           <attribute name="verticalHeaderDefaultSectionSize">
+           <attribute name="horizontalHeaderDefaultSectionSize">
             <number>110</number>
            </attribute>
            <attribute name="verticalHeaderMinimumSectionSize">
+            <number>110</number>
+           </attribute>
+           <attribute name="verticalHeaderDefaultSectionSize">
             <number>110</number>
            </attribute>
            <row/>
@@ -700,16 +724,16 @@
            <property name="columnCount">
             <number>2</number>
            </property>
-           <attribute name="horizontalHeaderDefaultSectionSize">
-            <number>110</number>
-           </attribute>
            <attribute name="horizontalHeaderMinimumSectionSize">
             <number>110</number>
            </attribute>
-           <attribute name="verticalHeaderDefaultSectionSize">
+           <attribute name="horizontalHeaderDefaultSectionSize">
             <number>110</number>
            </attribute>
            <attribute name="verticalHeaderMinimumSectionSize">
+            <number>110</number>
+           </attribute>
+           <attribute name="verticalHeaderDefaultSectionSize">
             <number>110</number>
            </attribute>
            <row/>

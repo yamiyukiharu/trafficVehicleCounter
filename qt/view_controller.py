@@ -30,6 +30,7 @@ class ViewController(QWidget, Ui_Form):
         self.frameView.ui.menuBtn.hide()
         self.frameView.view.setMouseEnabled(False,False)
         self.visualizeMarker = pg.LineSegmentROI(positions=[(0,0), (0,0)])
+        # self.frameView.addItem(self.visualizeMarker)
 
 
         self.setupSignalSlots()
@@ -60,7 +61,6 @@ class ViewController(QWidget, Ui_Form):
 
         self.frameSlider.valueChanged.connect(self.model.previewFrame)
         self.visualizeBtn.clicked.connect(self.visualizeCountingParam)
-        self.visualizeMarker.sigRegionChangeFinished.connect(self.updateCountingParams)
 
 #====================== File Dialog Functions =====================
 
@@ -141,22 +141,39 @@ class ViewController(QWidget, Ui_Form):
 
     def visualizeCountingParam(self):
         # add arrow with length defined in distance
-        cx = 500
-        cy = 500
+
+        cx = self.frameView.imageItem.viewPos().x()/2
+        cy = self.frameView.imageItem.viewPos().y()/2
+        w = self.widthFilterVectorSpn.value()
         dx = self.xFilterVectorSpn.value() / 2
         hypo = self.distFilterSpn.value()/ 2
         dy = math.sqrt(hypo*hypo - dx*dx)
         if self.yFilterVectorSpn.value() < 0:
             dy = -dy
-        pos_start = QPoint(cx - abs(dx), cy - dy)
-        pos_end = QPoint(cx + abs(dx), cy + dy )
 
-        
-        self.visualizeMarker.handles[0]['item'].setPos(pos_start)
-        self.visualizeMarker.handles[1]['item'].setPos(pos_end)
+        '''
+        LineROI seems to mess up the line direction
+        The commented lines are the correct math, which
+        works with LineSegmentROI, but not LineROI
+        '''
+        pos_start = QPoint(cx - dx, cy - dy)
+        pos_end = QPoint(cx + dx, cy + dy )
+        # pos_start = QPoint(cx - dx, cy + dy)
+        # pos_end = QPoint(cx + dx, cy - dy )
+
+        self.frameView.view.removeItem(self.visualizeMarker)
+        self.visualizeMarker = pg.LineROI(pos_start, pos_end, width=w)
+
         self.frameView.addItem(self.visualizeMarker)
+        self.visualizeMarker.sigRegionChangeFinished.connect(self.updateCountingParams)
+
+        print('start vis: ' + str(pos_start.x()) + ',' + str(pos_start.y()))
+        print('end vis: ' + str(pos_end.x()) + ',' + str(pos_end.y()))
+        print('###########################')
+
 
     def updateCountingParams(self):
+        width = self.visualizeMarker.size()[1]
         positions = self.visualizeMarker.getSceneHandlePositions()
         start = positions[0][1]
         end = positions[1][1]
@@ -169,10 +186,20 @@ class ViewController(QWidget, Ui_Form):
         end = self.frameView.getView().mapFromViewToItem(self.frameView.imageItem, end)
 
         # calculate filter distance from line length
+        dist = math.dist([start.x(), start.y()], [end.x(), end.y()])
 
         # calculate x & y filter values from line vector
+        dx = (end - start).x()
+        dy = (start - end).y()
 
-        print(start)
+        self.distFilterSpn.setValue(dist)
+        self.xFilterVectorSpn.setValue(dx)
+        self.yFilterVectorSpn.setValue(dy)
+        self.widthFilterVectorSpn.setValue(width)
+
+        print('start vis: ' + str(start.x()) + ',' + str(start.y()))
+        print('end vis: ' + str(end.x()) + ',' + str(end.y()))
+        print('###########################')
 
     def startCounting(self):
         if self.cacheDataFile != '':
