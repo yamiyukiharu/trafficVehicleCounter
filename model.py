@@ -40,6 +40,7 @@ class Model(QObject):
         self.output_data_path = ''
         self.cache_data = None
         self.vid = None
+        self.detected_vehicles = {class_id : {} for class_name, class_id in class_id_map.items()}
 
         #initialize color map
         cmap = plt.get_cmap('tab20b')
@@ -68,13 +69,15 @@ class Model(QObject):
     def setCountingFilter(self, params:dict):
         self.filt_x_vec = params['x_vect']
         self.filt_y_vec = params['y_vect']
+        self.filt_width = params['width']
         self.filt_dist = params['dist']
         self.filt_frame = params['frames']
 
     def stopInference(self):
         self.stop_inference = True
 
-    def countVehicles(self, frame_num, detection, tracker_dict:dict) -> bool:
+    def countVehicles(self, frame, frame_num, detection) -> bool:
+        class_id = detection[0]
         uid = str(detection[1])
 
         # xmin, ymin, xmax, ymax
@@ -87,6 +90,8 @@ class Model(QObject):
         cx = x_min + (width / 2)
         cy = y_min + (height / 2)
         centroid = [cx, cy]
+        tracker_dict = self.detected_vehicles[str(class_id)]
+
         # detecting for the first time
         if uid not in tracker_dict.keys():
             tracker_dict[uid] = {
@@ -119,9 +124,17 @@ class Model(QObject):
             vect = [cx - initial_centroid[0], cy - initial_centroid[1]]
 
             # only count vehicles travelling south
-            if (vect[0] < 0) and (vect[1] > 0):
+            x_min = self.filt_x_vec - self.filt_width
+            x_max = self.filt_x_vec + self.filt_width
+
+            if (x_min < vect[0] < x_max) and (vect[1] > 0) == (self.filt_y_vec > 0):
                 tracker_dict[uid]['counted'] = True
+
+                cnt = sum([param['counted'] for id, param in tracker_dict.items()])
+                img = self.getVehicleImage(detection, frame)
+                self.vehicle_count_signal.emit(class_id, int(uid), cnt, img)
                 return True
+
 
     def validateInputFiles(self) -> bool:
         if self.cache_data is None:
@@ -172,13 +185,11 @@ class Model(QObject):
             self.error_signal.emit('Video and cache frame count does not match')
             return
 
+        # reinitialize dict for counting
+        self.detected_vehicles = {class_id : {} for class_name, class_id in class_id_map.items()}
+
         # go to first frame
         self.vid.set(cv2.CAP_PROP_POS_FRAMES, 0)
-
-        cars = {}
-        trucks = {}
-        car_cnt = 0
-        truck_cnt = 0
 
         for frame_num, frame_data in enumerate(self.cache_data):
             _, frame = self.vid.read()
@@ -186,24 +197,7 @@ class Model(QObject):
             # self.frame_update_signal.emit(frame, frame_num)
 
             for detection in frame_data:
-                class_id = detection[0]
-                uid = detection[1]
-
-                if class_id == 0:
-                    continue
-                elif class_id == 1:
-                    detected = self.countVehicles(frame_num, detection, trucks)
-                    if detected:
-                        truck_cnt = truck_cnt + 1
-                        img = self.getVehicleImage(detection, frame)
-                        self.vehicle_count_signal.emit(class_id, uid, truck_cnt, img)
-                        
-                elif class_id == 2:
-                    detected = self.countVehicles(frame_num, detection, cars)
-                    if detected:
-                        car_cnt = car_cnt + 1
-                        img = self.getVehicleImage(detection, frame)
-                        self.vehicle_count_signal.emit(class_id, uid, car_cnt, img)
+                self.countVehicles(frame, frame_num, detection)
                         
         self.process_done_signal.emit()
                 
@@ -236,6 +230,7 @@ class Model(QObject):
             return
 
         self.stop_inference = False
+        self.detected_vehicles = {class_id : {} for class_name, class_id in class_id_map.items()}
 
         import tensorflow as tf
         physical_devices = tf.config.experimental.list_physical_devices('GPU')
@@ -272,6 +267,9 @@ class Model(QObject):
         total_frames = int(self.vid.get(cv2.CAP_PROP_FRAME_COUNT))
         self.max_frame_update_signal.emit(total_frames)
 
+        # go to first frame
+        self.vid.set(cv2.CAP_PROP_POS_FRAMES, 0)
+
         # get video ready to save locally 
         # by default VideoCapture returns float instead of int
         width = int(self.vid.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -283,10 +281,16 @@ class Model(QObject):
         # initialize buffer to store cache
         cache = []
 
+        # buffer to track and count vehicles
+        cars = {}
+        trucks = {}
+        car_cnt = 0
+        truck_cnt = 0
+
         frame_num = 0
         # while video is running
         while not self.stop_inference:
-            frame_data = np.zeros((MAX_DETECTION_NUM, 6))
+            frame_data = np.zeros((MAX_DETECTION_NUM, 6), dtype=int)
 
             return_value, frame = self.vid.read()
             if return_value:
@@ -386,10 +390,14 @@ class Model(QObject):
                 # add to hdf buffer
                 class_id = self.getClassId(class_name)
                 frame_data[obj_num] = [class_id, id, x_min, y_min, x_max, y_max]
-                obj_num = obj_num + 1
+
+                # Count vehicles
+                self.countVehicles(frame, frame_num, frame_data[obj_num])
 
                 # draw bbox on screen
                 frame = self.drawBoundingBox(frame, class_name, id, x_min, y_min, x_max, y_max)
+                
+                obj_num = obj_num + 1
 
             result = np.asarray(frame)
             result = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
@@ -410,6 +418,7 @@ class Model(QObject):
         cache_data.close()
 
         self.process_done_signal.emit()
+
 
     def drawBoundingBox(self, frame, class_name:str, id:int, x_min, y_min, x_max, y_max ):
         color = self.colors[id % len(self.colors)]

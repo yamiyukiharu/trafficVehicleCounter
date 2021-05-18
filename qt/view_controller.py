@@ -1,4 +1,5 @@
 
+from typing import Tuple
 from PySide2.QtCore import QPoint, QUrl, Signal, Slot
 from PySide2.QtWidgets import QFileDialog, QMessageBox, QTableWidgetItem, QWidget
 from PySide2.QtGui import QImage, QPixmap, Qt, QIcon
@@ -29,7 +30,10 @@ class ViewController(QWidget, Ui_Form):
         self.frameView.ui.roiBtn.hide()
         self.frameView.ui.menuBtn.hide()
         self.frameView.view.setMouseEnabled(False,False)
-        self.visualizeMarker = pg.LineSegmentROI(positions=[(0,0), (0,0)])
+        
+        self.visualizeMarkerStart = QPoint(200,200)
+        self.visualizeMarkerEnd = QPoint(500,500)
+        self.visualizeMarker = pg.LineROI(self.visualizeMarkerStart, self.visualizeMarkerEnd, 50)
         # self.frameView.addItem(self.visualizeMarker)
 
 
@@ -60,7 +64,7 @@ class ViewController(QWidget, Ui_Form):
         self.model.process_done_signal.connect(self.onProcessDone)
 
         self.frameSlider.valueChanged.connect(self.model.previewFrame)
-        self.visualizeBtn.clicked.connect(self.visualizeCountingParam)
+        self.visualizeChk.toggled.connect(self.visualizeCountingParam)
 
 #====================== File Dialog Functions =====================
 
@@ -86,10 +90,10 @@ class ViewController(QWidget, Ui_Form):
         self.inputVideoFileLabel.setText(file_path)
         self.model.setInputVideoPath(self.inputVideoFile)
 
-        content = QMediaContent(QUrl.fromLocalFile(file_path))
-        self.mediaPlayer.setMedia(content)
-        self.mediaPlayer.play()
-        self.mediaPlayer.pause()
+        # content = QMediaContent(QUrl.fromLocalFile(file_path))
+        # self.mediaPlayer.setMedia(content)
+        # self.mediaPlayer.play()
+        # self.mediaPlayer.pause()
 
         # set the output file name to match as well
         self.setOutputFile(file_path)
@@ -139,41 +143,34 @@ class ViewController(QWidget, Ui_Form):
 
 #================= Vehicle Counting Functions =========================
 
-    def visualizeCountingParam(self):
-        # add arrow with length defined in distance
+    @Slot(bool)
+    def visualizeCountingParam(self, checked):
+        if checked:
+            # add arrow with length defined in distance
+            self.frameView.addItem(self.visualizeMarker)
+            self.visualizeMarker.sigRegionChangeFinished.connect(self.updateCountingParams)
 
-        cx = self.frameView.imageItem.viewPos().x()/2
-        cy = self.frameView.imageItem.viewPos().y()/2
-        w = self.widthFilterVectorSpn.value()
-        dx = self.xFilterVectorSpn.value() / 2
-        hypo = self.distFilterSpn.value()/ 2
-        dy = math.sqrt(hypo*hypo - dx*dx)
-        if self.yFilterVectorSpn.value() < 0:
-            dy = -dy
+            # positions = self.visualizeMarker.getSceneHandlePositions()
+            # start = positions[0][1]
+            # end = positions[1][1]
+            # center = start + (end - start)/2
+            # cx = center.x()
+            # cy = center.y()
+            # w = self.widthFilterVectorSpn.value()
+            # dx = self.xFilterVectorSpn.value() / 2
+            # hypo = self.distFilterSpn.value()/ 2
+            # dy = math.sqrt(hypo*hypo - dx*dx)
+            # if self.yFilterVectorSpn.value() < 0:
+            #     dy = -dy
 
-        '''
-        LineROI seems to mess up the line direction
-        The commented lines are the correct math, which
-        works with LineSegmentROI, but not LineROI
-        '''
-        pos_start = QPoint(cx - dx, cy - dy)
-        pos_end = QPoint(cx + dx, cy + dy )
-        # pos_start = QPoint(cx - dx, cy + dy)
-        # pos_end = QPoint(cx + dx, cy - dy )
+            # pos_start = QPoint(cx - dx, cy + dy)
+            # pos_end = QPoint(cx + dx, cy - dy )
 
-        self.frameView.view.removeItem(self.visualizeMarker)
-        self.visualizeMarker = pg.LineROI(pos_start, pos_end, width=w)
-
-        self.frameView.addItem(self.visualizeMarker)
-        self.visualizeMarker.sigRegionChangeFinished.connect(self.updateCountingParams)
-
-        print('start vis: ' + str(pos_start.x()) + ',' + str(pos_start.y()))
-        print('end vis: ' + str(pos_end.x()) + ',' + str(pos_end.y()))
-        print('###########################')
+        else:
+            self.frameView.view.removeItem(self.visualizeMarker)
 
 
-    def updateCountingParams(self):
-        width = self.visualizeMarker.size()[1]
+    def getMarkerPos(self) -> Tuple[QPoint, QPoint]:
         positions = self.visualizeMarker.getSceneHandlePositions()
         start = positions[0][1]
         end = positions[1][1]
@@ -181,16 +178,20 @@ class ViewController(QWidget, Ui_Form):
         # convert to image coordinate system
         start = self.frameView.getView().mapSceneToView(start)
         start = self.frameView.getView().mapFromViewToItem(self.frameView.imageItem, start)
-
         end = self.frameView.getView().mapSceneToView(end)
         end = self.frameView.getView().mapFromViewToItem(self.frameView.imageItem, end)
+        return start, end
+
+    def updateCountingParams(self):
+        width = self.visualizeMarker.size()[1]
+        start, end = self.getMarkerPos()
 
         # calculate filter distance from line length
         dist = math.dist([start.x(), start.y()], [end.x(), end.y()])
 
         # calculate x & y filter values from line vector
         dx = (end - start).x()
-        dy = (start - end).y()
+        dy = (end - start).y()
 
         self.distFilterSpn.setValue(dist)
         self.xFilterVectorSpn.setValue(dx)
@@ -212,20 +213,22 @@ class ViewController(QWidget, Ui_Form):
     def updateVehicleCount(self, class_id, uid, count, img):
         if class_id == 1:
             self.truckCount.display(count)
-            item = QTableWidgetItem()
-            pixmap = self.convert_cv_qt(img, 100, 100)
-            item.setData(Qt.DecorationRole, pixmap)
-            self.truckPreviewTable.setItem(count-1,0,item)
-            item = QTableWidgetItem(str(uid))
-            self.truckPreviewTable.setItem(count-1,1,item)
+            table = self.truckPreviewTable
         elif class_id == 2:
             self.carCount.display(count)
-            item = QTableWidgetItem()
-            pixmap = self.convert_cv_qt(img, 100, 100)
-            item.setData(Qt.DecorationRole, pixmap)
-            self.carPreviewTable.setItem(count-1,0,item)
-            item = QTableWidgetItem(str(uid))
-            self.carPreviewTable.setItem(count-1,1,item)
+            table = self.carPreviewTable
+        elif class_id == 3:
+            self.busCount.display(count)
+            table = self.truckPreviewTable
+        else:
+            return
+
+        item = QTableWidgetItem()
+        pixmap = self.convert_cv_qt(img, 100, 100)
+        item.setData(Qt.DecorationRole, pixmap)
+        table.setItem(count-1,0,item)
+        item = QTableWidgetItem(str(uid))
+        table.setItem(count-1,1,item)
 
 #================== Inference Functions ======================
 
@@ -245,6 +248,7 @@ class ViewController(QWidget, Ui_Form):
             {
                 'x_vect': self.xFilterVectorSpn.value(),
                 'y_vect': self.yFilterVectorSpn.value(),
+                'width' : self.widthFilterVectorSpn.value(),
                 'dist'  : self.distFilterSpn.value(),
                 'frames': self.skipFrameFilterSpn.value()
             }
@@ -252,6 +256,10 @@ class ViewController(QWidget, Ui_Form):
 
         # change video display to frames updated by Qlabel
         self.videoSwitcher.setCurrentIndex(1)
+
+        # clear the preview table
+        self.carPreviewTable.clear()
+        self.truckPreviewTable.clear()
 
         self.enableControls(False)
 
@@ -279,7 +287,6 @@ class ViewController(QWidget, Ui_Form):
         # self.frameView.view.setAspectLocked(False)
         self.frameView.view.setXRange(0, cv_img.shape[1])
         self.frameView.view.setYRange(0, cv_img.shape[0])
-        self.frameSlider.setSliderPosition(frame_num)
         self.frameNum.setText(str(frame_num))
     
     def convert_cv_qt(self, rgb_image, width, height):

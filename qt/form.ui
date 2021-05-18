@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1103</width>
-    <height>731</height>
+    <width>1105</width>
+    <height>737</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -405,7 +405,7 @@
              <double>1000.000000000000000</double>
             </property>
             <property name="value">
-             <double>-5.000000000000000</double>
+             <double>-250.000000000000000</double>
             </property>
            </widget>
           </item>
@@ -426,7 +426,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="visualizeBtn">
+             <widget class="QCheckBox" name="visualizeChk">
               <property name="text">
                <string>Visualize</string>
               </property>
@@ -453,7 +453,7 @@
              <double>1000.000000000000000</double>
             </property>
             <property name="value">
-             <double>-5.000000000000000</double>
+             <double>300.000000000000000</double>
             </property>
            </widget>
           </item>
@@ -463,7 +463,7 @@
              <number>1000</number>
             </property>
             <property name="value">
-             <number>500</number>
+             <number>400</number>
             </property>
            </widget>
           </item>
@@ -520,6 +520,22 @@
      <item>
       <widget class="QWidget" name="widget_2" native="true">
        <layout class="QGridLayout" name="gridLayout">
+        <item row="1" column="1">
+         <widget class="QLCDNumber" name="carCount">
+          <property name="lineWidth">
+           <number>0</number>
+          </property>
+          <property name="digitCount">
+           <number>3</number>
+          </property>
+          <property name="segmentStyle">
+           <enum>QLCDNumber::Flat</enum>
+          </property>
+          <property name="intValue" stdset="0">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="0" alignment="Qt::AlignHCenter">
          <widget class="QLabel" name="label">
           <property name="sizePolicy">
@@ -564,12 +580,25 @@
            <enum>QLCDNumber::Flat</enum>
           </property>
           <property name="intValue" stdset="0">
-           <number>5</number>
+           <number>0</number>
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
-         <widget class="QLCDNumber" name="carCount">
+        <item row="0" column="2" alignment="Qt::AlignHCenter">
+         <widget class="QLabel" name="label_15">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Bus</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QLCDNumber" name="busCount">
           <property name="lineWidth">
            <number>0</number>
           </property>
@@ -580,7 +609,7 @@
            <enum>QLCDNumber::Flat</enum>
           </property>
           <property name="intValue" stdset="0">
-           <number>5</number>
+           <number>0</number>
           </property>
          </widget>
         </item>
@@ -793,5 +822,70 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>visualizeChk</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>xFilterVectorSpn</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>751</x>
+     <y>687</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>737</x>
+     <y>584</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>visualizeChk</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>yFilterVectorSpn</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>792</x>
+     <y>691</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>800</x>
+     <y>579</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>visualizeChk</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>widthFilterVectorSpn</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>760</x>
+     <y>684</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>730</x>
+     <y>607</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>visualizeChk</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>distFilterSpn</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>769</x>
+     <y>689</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>720</x>
+     <y>628</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

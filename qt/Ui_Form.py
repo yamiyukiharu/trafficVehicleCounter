@@ -23,7 +23,7 @@ class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(1103, 731)
+        Form.resize(1105, 737)
         self.horizontalLayout = QHBoxLayout(Form)
         self.horizontalLayout.setSpacing(5)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -274,7 +274,7 @@ class Ui_Form(object):
         self.xFilterVectorSpn.setDecimals(0)
         self.xFilterVectorSpn.setMinimum(-1000.000000000000000)
         self.xFilterVectorSpn.setMaximum(1000.000000000000000)
-        self.xFilterVectorSpn.setValue(-5.000000000000000)
+        self.xFilterVectorSpn.setValue(-250.000000000000000)
 
         self.gridLayout_4.addWidget(self.xFilterVectorSpn, 1, 2, 1, 1)
 
@@ -290,10 +290,10 @@ class Ui_Form(object):
 
         self.horizontalLayout_6.addWidget(self.countBtn)
 
-        self.visualizeBtn = QPushButton(self.countingGBox)
-        self.visualizeBtn.setObjectName(u"visualizeBtn")
+        self.visualizeChk = QCheckBox(self.countingGBox)
+        self.visualizeChk.setObjectName(u"visualizeChk")
 
-        self.horizontalLayout_6.addWidget(self.visualizeBtn)
+        self.horizontalLayout_6.addWidget(self.visualizeChk)
 
 
         self.gridLayout_4.addLayout(self.horizontalLayout_6, 5, 0, 1, 5)
@@ -309,14 +309,14 @@ class Ui_Form(object):
         self.yFilterVectorSpn.setDecimals(0)
         self.yFilterVectorSpn.setMinimum(-1000.000000000000000)
         self.yFilterVectorSpn.setMaximum(1000.000000000000000)
-        self.yFilterVectorSpn.setValue(-5.000000000000000)
+        self.yFilterVectorSpn.setValue(300.000000000000000)
 
         self.gridLayout_4.addWidget(self.yFilterVectorSpn, 1, 4, 1, 1)
 
         self.distFilterSpn = QSpinBox(self.countingGBox)
         self.distFilterSpn.setObjectName(u"distFilterSpn")
         self.distFilterSpn.setMaximum(1000)
-        self.distFilterSpn.setValue(500)
+        self.distFilterSpn.setValue(400)
 
         self.gridLayout_4.addWidget(self.distFilterSpn, 3, 2, 1, 1)
 
@@ -363,6 +363,15 @@ class Ui_Form(object):
         self.widget_2.setObjectName(u"widget_2")
         self.gridLayout = QGridLayout(self.widget_2)
         self.gridLayout.setObjectName(u"gridLayout")
+        self.carCount = QLCDNumber(self.widget_2)
+        self.carCount.setObjectName(u"carCount")
+        self.carCount.setLineWidth(0)
+        self.carCount.setDigitCount(3)
+        self.carCount.setSegmentStyle(QLCDNumber.Flat)
+        self.carCount.setProperty("intValue", 0)
+
+        self.gridLayout.addWidget(self.carCount, 1, 1, 1, 1)
+
         self.label = QLabel(self.widget_2)
         self.label.setObjectName(u"label")
         sizePolicy3 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
@@ -390,18 +399,25 @@ class Ui_Form(object):
         self.truckCount.setLineWidth(0)
         self.truckCount.setDigitCount(3)
         self.truckCount.setSegmentStyle(QLCDNumber.Flat)
-        self.truckCount.setProperty("intValue", 5)
+        self.truckCount.setProperty("intValue", 0)
 
         self.gridLayout.addWidget(self.truckCount, 1, 0, 1, 1)
 
-        self.carCount = QLCDNumber(self.widget_2)
-        self.carCount.setObjectName(u"carCount")
-        self.carCount.setLineWidth(0)
-        self.carCount.setDigitCount(3)
-        self.carCount.setSegmentStyle(QLCDNumber.Flat)
-        self.carCount.setProperty("intValue", 5)
+        self.label_15 = QLabel(self.widget_2)
+        self.label_15.setObjectName(u"label_15")
+        sizePolicy3.setHeightForWidth(self.label_15.sizePolicy().hasHeightForWidth())
+        self.label_15.setSizePolicy(sizePolicy3)
 
-        self.gridLayout.addWidget(self.carCount, 1, 1, 1, 1)
+        self.gridLayout.addWidget(self.label_15, 0, 2, 1, 1, Qt.AlignHCenter)
+
+        self.busCount = QLCDNumber(self.widget_2)
+        self.busCount.setObjectName(u"busCount")
+        self.busCount.setLineWidth(0)
+        self.busCount.setDigitCount(3)
+        self.busCount.setSegmentStyle(QLCDNumber.Flat)
+        self.busCount.setProperty("intValue", 0)
+
+        self.gridLayout.addWidget(self.busCount, 1, 2, 1, 1)
 
 
         self.verticalLayout.addWidget(self.widget_2)
@@ -474,6 +490,10 @@ class Ui_Form(object):
 
 
         self.retranslateUi(Form)
+        self.visualizeChk.toggled.connect(self.xFilterVectorSpn.setEnabled)
+        self.visualizeChk.toggled.connect(self.yFilterVectorSpn.setEnabled)
+        self.visualizeChk.toggled.connect(self.widthFilterVectorSpn.setEnabled)
+        self.visualizeChk.toggled.connect(self.distFilterSpn.setEnabled)
 
         self.videoSwitcher.setCurrentIndex(1)
         self.previewTabWidget.setCurrentIndex(0)
@@ -512,13 +532,14 @@ class Ui_Form(object):
         self.label_6.setText(QCoreApplication.translate("Form", u"Max Skipped Frames", None))
         self.label_12.setText(QCoreApplication.translate("Form", u"Y:", None))
         self.countBtn.setText(QCoreApplication.translate("Form", u"Count Offline", None))
-        self.visualizeBtn.setText(QCoreApplication.translate("Form", u"Visualize", None))
+        self.visualizeChk.setText(QCoreApplication.translate("Form", u"Visualize", None))
         self.label_14.setText(QCoreApplication.translate("Form", u"Filter Vector Width", None))
         self.label_5.setText(QCoreApplication.translate("Form", u"Travel Distance (pixels)", None))
         self.label_4.setText(QCoreApplication.translate("Form", u"Filter Vector (pixels)", None))
         self.label_11.setText(QCoreApplication.translate("Form", u"X:", None))
         self.label.setText(QCoreApplication.translate("Form", u"Trucks", None))
         self.label_2.setText(QCoreApplication.translate("Form", u"Cars", None))
+        self.label_15.setText(QCoreApplication.translate("Form", u"Bus", None))
         self.label_3.setText(QCoreApplication.translate("Form", u"Detections", None))
         self.previewTabWidget.setTabText(self.previewTabWidget.indexOf(self.truckPreviewTab), QCoreApplication.translate("Form", u"Trucks", None))
         self.previewTabWidget.setTabText(self.previewTabWidget.indexOf(self.carPreviewTab), QCoreApplication.translate("Form", u"Cars", None))
