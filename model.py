@@ -40,11 +40,15 @@ class Model(QObject):
         self.output_data_path = ''
         self.cache_data = None
         self.vid = None
-        self.detected_vehicles = {class_id : {} for class_name, class_id in class_id_map.items()}
+        self.detected_vehicles = None
+        self.initialize_counting()
 
         #initialize color map
         cmap = plt.get_cmap('tab20b')
         self.colors = [cmap(i)[:3] for i in np.linspace(0, 1, 20)]
+
+    def initialize_counting(self):
+        self.detected_vehicles = {class_id : {} for class_name, class_id in class_id_map.items()}
 
     def setInputVideoPath(self, path):
         self.input_video_path = path
@@ -105,7 +109,7 @@ class Model(QObject):
 
         # already counted this car, skip
         elif tracker_dict[uid]['counted'] == True:
-            return False
+            return True
         
         # reset distance travelled if previous detected frame is too far off
         elif frame_num - tracker_dict[uid]['prev_frame_num'] > self.filt_frame:
@@ -212,7 +216,7 @@ class Model(QObject):
         height = y_max - y_min
 
         img = frame[y_min:y_max, x_min:x_max]
-        return np.ascontiguousarray(img)
+        return np.ascontiguousarray(img).copy()
 
     def getClassId(self, class_name:str) -> int:
         id = class_id_map.get(class_name)
@@ -392,10 +396,10 @@ class Model(QObject):
                 frame_data[obj_num] = [class_id, id, x_min, y_min, x_max, y_max]
 
                 # Count vehicles
-                self.countVehicles(frame, frame_num, frame_data[obj_num])
+                detected = self.countVehicles(frame, frame_num, frame_data[obj_num])
 
                 # draw bbox on screen
-                frame = self.drawBoundingBox(frame, class_name, id, x_min, y_min, x_max, y_max)
+                frame = self.drawBoundingBox(frame, class_name, id, x_min, y_min, x_max, y_max, highlight=detected)
                 
                 obj_num = obj_num + 1
 
@@ -420,10 +424,17 @@ class Model(QObject):
         self.process_done_signal.emit()
 
 
-    def drawBoundingBox(self, frame, class_name:str, id:int, x_min, y_min, x_max, y_max ):
+    def drawBoundingBox(self, frame:np.ndarray, class_name:str, id:int, x_min, y_min, x_max, y_max, highlight=False):
         color = self.colors[id % len(self.colors)]
         color = [i * 255 for i in color]
         cv2.rectangle(frame, (x_min, y_min), (x_max, y_max), color, 2)
         cv2.rectangle(frame, (x_min, y_min-30), (x_min+(len(class_name)+len(str(id)) )*17, y_min), color, -1)
         cv2.putText(frame, class_name + "-" + str(id),(x_min, int(y_min-10)),0, 0.75, (255,255,255),2)
+
+        if highlight:
+            # highlight in green
+            frame = frame.astype(np.float)
+            frame[y_min:y_max, x_min:x_max, 0] = np.absolute(frame[y_min:y_max, x_min:x_max, 2] - frame[y_min:y_max, x_min:x_max, 1])
+            frame[y_min:y_max, x_min:x_max, 2] = frame[y_min:y_max, x_min:x_max, 0]
+            frame = frame.astype(np.uint8)
         return frame

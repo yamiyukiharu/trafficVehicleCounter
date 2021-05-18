@@ -41,7 +41,7 @@ class ViewController(QWidget, Ui_Form):
         # development
         
         self.setVideo(os.getcwd() + '/data/video/VehicleTest.mp4')
-        self.setCacheData(os.getcwd() + '/outputs/data.h5')
+        self.setCacheData(os.getcwd() + '/data/video/VehicleTest.h5')
 
     def setupSignalSlots(self):
         self.loadVideoBtn.clicked.connect(self.openVideoFile)
@@ -102,7 +102,7 @@ class ViewController(QWidget, Ui_Form):
         if '.mp4' in file_path:
             file_path = file_path.replace('.mp4', '')
         self.outputVideoFile = file_path + '.avi'
-        self.outputDataFile = file_path + '.hdf'
+        self.outputDataFile = file_path + '.h5'
         self.outputFileLabel.setText(file_path)
         self.model.setOutputVideoPath(self.outputVideoFile)
         self.model.setOutputDataPath(self.outputDataFile)
@@ -219,7 +219,7 @@ class ViewController(QWidget, Ui_Form):
             table = self.carPreviewTable
         elif class_id == 3:
             self.busCount.display(count)
-            table = self.truckPreviewTable
+            table = self.busPreviewTable
         else:
             return
 

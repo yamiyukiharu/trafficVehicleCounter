@@ -638,7 +638,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="truckPreviewTab">
         <attribute name="title">
@@ -669,7 +669,7 @@
             <number>2</number>
            </property>
            <attribute name="horizontalHeaderVisible">
-            <bool>true</bool>
+            <bool>false</bool>
            </attribute>
            <attribute name="horizontalHeaderMinimumSectionSize">
             <number>110</number>
@@ -741,6 +741,73 @@
          </property>
          <item>
           <widget class="QTableWidget" name="carPreviewTable">
+           <property name="showGrid">
+            <bool>true</bool>
+           </property>
+           <property name="gridStyle">
+            <enum>Qt::SolidLine</enum>
+           </property>
+           <property name="rowCount">
+            <number>30</number>
+           </property>
+           <property name="columnCount">
+            <number>2</number>
+           </property>
+           <attribute name="horizontalHeaderMinimumSectionSize">
+            <number>110</number>
+           </attribute>
+           <attribute name="horizontalHeaderDefaultSectionSize">
+            <number>110</number>
+           </attribute>
+           <attribute name="verticalHeaderMinimumSectionSize">
+            <number>110</number>
+           </attribute>
+           <attribute name="verticalHeaderDefaultSectionSize">
+            <number>110</number>
+           </attribute>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <column/>
+           <column/>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="busPreviewTab">
+        <attribute name="title">
+         <string>Bus</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_7">
+         <item>
+          <widget class="QTableWidget" name="busPreviewTable">
            <property name="showGrid">
             <bool>true</bool>
            </property>

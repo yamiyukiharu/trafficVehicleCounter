@@ -449,7 +449,7 @@ class Ui_Form(object):
         self.truckPreviewTable.setObjectName(u"truckPreviewTable")
         self.truckPreviewTable.setRowCount(30)
         self.truckPreviewTable.setColumnCount(2)
-        self.truckPreviewTable.horizontalHeader().setVisible(True)
+        self.truckPreviewTable.horizontalHeader().setVisible(False)
         self.truckPreviewTable.horizontalHeader().setMinimumSectionSize(110)
         self.truckPreviewTable.horizontalHeader().setDefaultSectionSize(110)
         self.truckPreviewTable.verticalHeader().setMinimumSectionSize(110)
@@ -482,6 +482,28 @@ class Ui_Form(object):
         self.verticalLayout_6.addWidget(self.carPreviewTable)
 
         self.previewTabWidget.addTab(self.carPreviewTab, "")
+        self.busPreviewTab = QWidget()
+        self.busPreviewTab.setObjectName(u"busPreviewTab")
+        self.verticalLayout_7 = QVBoxLayout(self.busPreviewTab)
+        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
+        self.busPreviewTable = QTableWidget(self.busPreviewTab)
+        if (self.busPreviewTable.columnCount() < 2):
+            self.busPreviewTable.setColumnCount(2)
+        if (self.busPreviewTable.rowCount() < 30):
+            self.busPreviewTable.setRowCount(30)
+        self.busPreviewTable.setObjectName(u"busPreviewTable")
+        self.busPreviewTable.setShowGrid(True)
+        self.busPreviewTable.setGridStyle(Qt.SolidLine)
+        self.busPreviewTable.setRowCount(30)
+        self.busPreviewTable.setColumnCount(2)
+        self.busPreviewTable.horizontalHeader().setMinimumSectionSize(110)
+        self.busPreviewTable.horizontalHeader().setDefaultSectionSize(110)
+        self.busPreviewTable.verticalHeader().setMinimumSectionSize(110)
+        self.busPreviewTable.verticalHeader().setDefaultSectionSize(110)
+
+        self.verticalLayout_7.addWidget(self.busPreviewTable)
+
+        self.previewTabWidget.addTab(self.busPreviewTab, "")
 
         self.verticalLayout.addWidget(self.previewTabWidget)
 
@@ -496,7 +518,7 @@ class Ui_Form(object):
         self.visualizeChk.toggled.connect(self.distFilterSpn.setEnabled)
 
         self.videoSwitcher.setCurrentIndex(1)
-        self.previewTabWidget.setCurrentIndex(0)
+        self.previewTabWidget.setCurrentIndex(2)
 
 
         QMetaObject.connectSlotsByName(Form)
@@ -543,5 +565,6 @@ class Ui_Form(object):
         self.label_3.setText(QCoreApplication.translate("Form", u"Detections", None))
         self.previewTabWidget.setTabText(self.previewTabWidget.indexOf(self.truckPreviewTab), QCoreApplication.translate("Form", u"Trucks", None))
         self.previewTabWidget.setTabText(self.previewTabWidget.indexOf(self.carPreviewTab), QCoreApplication.translate("Form", u"Cars", None))
+        self.previewTabWidget.setTabText(self.previewTabWidget.indexOf(self.busPreviewTab), QCoreApplication.translate("Form", u"Bus", None))
     # retranslateUi
 
