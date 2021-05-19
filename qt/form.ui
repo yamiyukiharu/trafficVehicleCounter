@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1105</width>
-    <height>809</height>
+    <width>1158</width>
+    <height>788</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -164,7 +164,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QPushButton" name="stopInferenceBtn">
+            <widget class="QPushButton" name="stopProcessBtn">
              <property name="enabled">
               <bool>false</bool>
              </property>
@@ -431,10 +431,127 @@
           <property name="spacing">
            <number>2</number>
           </property>
+          <item row="4" column="2">
+           <widget class="QSpinBox" name="skipFrameFilterSpn">
+            <property name="value">
+             <number>10</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="4">
+           <widget class="QComboBox" name="countMethodCmb">
+            <item>
+             <property name="text">
+              <string>Vector</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Finish Line</string>
+             </property>
+            </item>
+           </widget>
+          </item>
           <item row="4" column="0">
            <widget class="QLabel" name="label_6">
             <property name="text">
              <string>Max Skipped Frames</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0" colspan="5">
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QPushButton" name="countBtn">
+              <property name="text">
+               <string>Quick Count</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="countAnalyzeBtn">
+              <property name="text">
+               <string>Count + Analyze</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>X:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QSpinBox" name="distFilterSpn">
+            <property name="maximum">
+             <number>1000</number>
+            </property>
+            <property name="value">
+             <number>440</number>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_14">
+            <property name="text">
+             <string>Filter Vector Width</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
+           <widget class="QDoubleSpinBox" name="yFilterVectorSpn">
+            <property name="decimals">
+             <number>0</number>
+            </property>
+            <property name="minimum">
+             <double>-1000.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>1000.000000000000000</double>
+            </property>
+            <property name="value">
+             <double>357.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_16">
+            <property name="text">
+             <string>Method:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QSpinBox" name="widthFilterVectorSpn">
+            <property name="maximum">
+             <number>1000</number>
+            </property>
+            <property name="value">
+             <number>192</number>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Travel Distance (pixels)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Filter Vector (pixels)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0" colspan="5">
+           <widget class="QCheckBox" name="finishLineChk">
+            <property name="text">
+             <string>Show Finish Line</string>
             </property>
            </widget>
           </item>
@@ -462,98 +579,9 @@
            </widget>
           </item>
           <item row="5" column="0" colspan="5">
-           <layout class="QHBoxLayout" name="horizontalLayout_6">
-            <item>
-             <widget class="QPushButton" name="countBtn">
-              <property name="text">
-               <string>Quick Count</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="countAnalyzeBtn">
-              <property name="text">
-               <string>Count + Analyze</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="visualizeChk">
-              <property name="text">
-               <string>Visualize</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="4" column="2">
-           <widget class="QSpinBox" name="skipFrameFilterSpn">
-            <property name="value">
-             <number>10</number>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="4">
-           <widget class="QDoubleSpinBox" name="yFilterVectorSpn">
-            <property name="decimals">
-             <number>0</number>
-            </property>
-            <property name="minimum">
-             <double>-1000.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>1000.000000000000000</double>
-            </property>
-            <property name="value">
-             <double>357.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2">
-           <widget class="QSpinBox" name="distFilterSpn">
-            <property name="maximum">
-             <number>1000</number>
-            </property>
-            <property name="value">
-             <number>440</number>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_14">
+           <widget class="QCheckBox" name="visualizeChk">
             <property name="text">
-             <string>Filter Vector Width</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Travel Distance (pixels)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Filter Vector (pixels)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLabel" name="label_11">
-            <property name="text">
-             <string>X:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QSpinBox" name="widthFilterVectorSpn">
-            <property name="maximum">
-             <number>1000</number>
-            </property>
-            <property name="value">
-             <number>192</number>
+             <string>Show Vector</string>
             </property>
            </widget>
           </item>

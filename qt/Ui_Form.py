@@ -23,7 +23,7 @@ class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(1105, 737)
+        Form.resize(1158, 788)
         self.horizontalLayout = QHBoxLayout(Form)
         self.horizontalLayout.setSpacing(5)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -109,13 +109,13 @@ class Ui_Form(object):
         self.horizontalLayout_5.setSpacing(10)
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
         self.horizontalLayout_5.setContentsMargins(10, -1, 10, 0)
-        self.stopInferenceBtn = QPushButton(self.analysisPage)
-        self.stopInferenceBtn.setObjectName(u"stopInferenceBtn")
-        self.stopInferenceBtn.setEnabled(False)
-        sizePolicy1.setHeightForWidth(self.stopInferenceBtn.sizePolicy().hasHeightForWidth())
-        self.stopInferenceBtn.setSizePolicy(sizePolicy1)
+        self.stopProcessBtn = QPushButton(self.analysisPage)
+        self.stopProcessBtn.setObjectName(u"stopProcessBtn")
+        self.stopProcessBtn.setEnabled(False)
+        sizePolicy1.setHeightForWidth(self.stopProcessBtn.sizePolicy().hasHeightForWidth())
+        self.stopProcessBtn.setSizePolicy(sizePolicy1)
 
-        self.horizontalLayout_5.addWidget(self.stopInferenceBtn)
+        self.horizontalLayout_5.addWidget(self.stopProcessBtn)
 
         self.frameSlider = QSlider(self.analysisPage)
         self.frameSlider.setObjectName(u"frameSlider")
@@ -271,6 +271,16 @@ class Ui_Form(object):
 
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.cosineDistSpn)
 
+        self.addMaskBtn = QPushButton(self.inferenceGBox)
+        self.addMaskBtn.setObjectName(u"addMaskBtn")
+
+        self.formLayout.setWidget(7, QFormLayout.FieldRole, self.addMaskBtn)
+
+        self.maskChk = QCheckBox(self.inferenceGBox)
+        self.maskChk.setObjectName(u"maskChk")
+
+        self.formLayout.setWidget(7, QFormLayout.LabelRole, self.maskChk)
+
 
         self.horizontalLayout_2.addWidget(self.inferenceGBox)
 
@@ -280,24 +290,23 @@ class Ui_Form(object):
         self.gridLayout_4.setSpacing(2)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
         self.gridLayout_4.setContentsMargins(5, 5, 5, 5)
+        self.skipFrameFilterSpn = QSpinBox(self.countingGBox)
+        self.skipFrameFilterSpn.setObjectName(u"skipFrameFilterSpn")
+        self.skipFrameFilterSpn.setValue(10)
+
+        self.gridLayout_4.addWidget(self.skipFrameFilterSpn, 4, 2, 1, 1)
+
+        self.countMethodCmb = QComboBox(self.countingGBox)
+        self.countMethodCmb.addItem("")
+        self.countMethodCmb.addItem("")
+        self.countMethodCmb.setObjectName(u"countMethodCmb")
+
+        self.gridLayout_4.addWidget(self.countMethodCmb, 0, 1, 1, 4)
+
         self.label_6 = QLabel(self.countingGBox)
         self.label_6.setObjectName(u"label_6")
 
         self.gridLayout_4.addWidget(self.label_6, 4, 0, 1, 1)
-
-        self.xFilterVectorSpn = QDoubleSpinBox(self.countingGBox)
-        self.xFilterVectorSpn.setObjectName(u"xFilterVectorSpn")
-        self.xFilterVectorSpn.setDecimals(0)
-        self.xFilterVectorSpn.setMinimum(-1000.000000000000000)
-        self.xFilterVectorSpn.setMaximum(1000.000000000000000)
-        self.xFilterVectorSpn.setValue(-250.000000000000000)
-
-        self.gridLayout_4.addWidget(self.xFilterVectorSpn, 1, 2, 1, 1)
-
-        self.label_12 = QLabel(self.countingGBox)
-        self.label_12.setObjectName(u"label_12")
-
-        self.gridLayout_4.addWidget(self.label_12, 1, 3, 1, 1)
 
         self.horizontalLayout_6 = QHBoxLayout()
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
@@ -311,33 +320,18 @@ class Ui_Form(object):
 
         self.horizontalLayout_6.addWidget(self.countAnalyzeBtn)
 
-        self.visualizeChk = QCheckBox(self.countingGBox)
-        self.visualizeChk.setObjectName(u"visualizeChk")
 
-        self.horizontalLayout_6.addWidget(self.visualizeChk)
+        self.gridLayout_4.addLayout(self.horizontalLayout_6, 7, 0, 1, 5)
 
+        self.label_11 = QLabel(self.countingGBox)
+        self.label_11.setObjectName(u"label_11")
 
-        self.gridLayout_4.addLayout(self.horizontalLayout_6, 5, 0, 1, 5)
-
-        self.skipFrameFilterSpn = QSpinBox(self.countingGBox)
-        self.skipFrameFilterSpn.setObjectName(u"skipFrameFilterSpn")
-        self.skipFrameFilterSpn.setValue(10)
-
-        self.gridLayout_4.addWidget(self.skipFrameFilterSpn, 4, 2, 1, 1)
-
-        self.yFilterVectorSpn = QDoubleSpinBox(self.countingGBox)
-        self.yFilterVectorSpn.setObjectName(u"yFilterVectorSpn")
-        self.yFilterVectorSpn.setDecimals(0)
-        self.yFilterVectorSpn.setMinimum(-1000.000000000000000)
-        self.yFilterVectorSpn.setMaximum(1000.000000000000000)
-        self.yFilterVectorSpn.setValue(300.000000000000000)
-
-        self.gridLayout_4.addWidget(self.yFilterVectorSpn, 1, 4, 1, 1)
+        self.gridLayout_4.addWidget(self.label_11, 1, 1, 1, 1)
 
         self.distFilterSpn = QSpinBox(self.countingGBox)
         self.distFilterSpn.setObjectName(u"distFilterSpn")
         self.distFilterSpn.setMaximum(1000)
-        self.distFilterSpn.setValue(400)
+        self.distFilterSpn.setValue(440)
 
         self.gridLayout_4.addWidget(self.distFilterSpn, 3, 2, 1, 1)
 
@@ -345,6 +339,27 @@ class Ui_Form(object):
         self.label_14.setObjectName(u"label_14")
 
         self.gridLayout_4.addWidget(self.label_14, 2, 0, 1, 1)
+
+        self.yFilterVectorSpn = QDoubleSpinBox(self.countingGBox)
+        self.yFilterVectorSpn.setObjectName(u"yFilterVectorSpn")
+        self.yFilterVectorSpn.setDecimals(0)
+        self.yFilterVectorSpn.setMinimum(-1000.000000000000000)
+        self.yFilterVectorSpn.setMaximum(1000.000000000000000)
+        self.yFilterVectorSpn.setValue(357.000000000000000)
+
+        self.gridLayout_4.addWidget(self.yFilterVectorSpn, 1, 4, 1, 1)
+
+        self.label_16 = QLabel(self.countingGBox)
+        self.label_16.setObjectName(u"label_16")
+
+        self.gridLayout_4.addWidget(self.label_16, 0, 0, 1, 1)
+
+        self.widthFilterVectorSpn = QSpinBox(self.countingGBox)
+        self.widthFilterVectorSpn.setObjectName(u"widthFilterVectorSpn")
+        self.widthFilterVectorSpn.setMaximum(1000)
+        self.widthFilterVectorSpn.setValue(192)
+
+        self.gridLayout_4.addWidget(self.widthFilterVectorSpn, 2, 2, 1, 1)
 
         self.label_5 = QLabel(self.countingGBox)
         self.label_5.setObjectName(u"label_5")
@@ -356,17 +371,29 @@ class Ui_Form(object):
 
         self.gridLayout_4.addWidget(self.label_4, 1, 0, 1, 1)
 
-        self.label_11 = QLabel(self.countingGBox)
-        self.label_11.setObjectName(u"label_11")
+        self.finishLineChk = QCheckBox(self.countingGBox)
+        self.finishLineChk.setObjectName(u"finishLineChk")
 
-        self.gridLayout_4.addWidget(self.label_11, 1, 1, 1, 1)
+        self.gridLayout_4.addWidget(self.finishLineChk, 6, 0, 1, 5)
 
-        self.widthFilterVectorSpn = QSpinBox(self.countingGBox)
-        self.widthFilterVectorSpn.setObjectName(u"widthFilterVectorSpn")
-        self.widthFilterVectorSpn.setMaximum(1000)
-        self.widthFilterVectorSpn.setValue(200)
+        self.xFilterVectorSpn = QDoubleSpinBox(self.countingGBox)
+        self.xFilterVectorSpn.setObjectName(u"xFilterVectorSpn")
+        self.xFilterVectorSpn.setDecimals(0)
+        self.xFilterVectorSpn.setMinimum(-1000.000000000000000)
+        self.xFilterVectorSpn.setMaximum(1000.000000000000000)
+        self.xFilterVectorSpn.setValue(-258.000000000000000)
 
-        self.gridLayout_4.addWidget(self.widthFilterVectorSpn, 2, 2, 1, 1)
+        self.gridLayout_4.addWidget(self.xFilterVectorSpn, 1, 2, 1, 1)
+
+        self.label_12 = QLabel(self.countingGBox)
+        self.label_12.setObjectName(u"label_12")
+
+        self.gridLayout_4.addWidget(self.label_12, 1, 3, 1, 1)
+
+        self.visualizeChk = QCheckBox(self.countingGBox)
+        self.visualizeChk.setObjectName(u"visualizeChk")
+
+        self.gridLayout_4.addWidget(self.visualizeChk, 5, 0, 1, 5)
 
 
         self.horizontalLayout_2.addWidget(self.countingGBox)
@@ -552,7 +579,7 @@ class Ui_Form(object):
         self.label_8.setText(QCoreApplication.translate("Form", u"/", None))
         self.videoMaxTime.setText(QCoreApplication.translate("Form", u"00:00", None))
         self.videoSwitcher.setTabText(self.videoSwitcher.indexOf(self.videoPlaybackPage), QCoreApplication.translate("Form", u"Playback", None))
-        self.stopInferenceBtn.setText(QCoreApplication.translate("Form", u"STOP", None))
+        self.stopProcessBtn.setText(QCoreApplication.translate("Form", u"STOP", None))
         self.frameNum.setText(QCoreApplication.translate("Form", u"0", None))
         self.label_13.setText(QCoreApplication.translate("Form", u"/", None))
         self.maxFrameNum.setText(QCoreApplication.translate("Form", u"N", None))
@@ -572,16 +599,23 @@ class Ui_Form(object):
         self.setOutputFileBtn.setText(QCoreApplication.translate("Form", u"...", None))
         self.startInferenceBtn.setText(QCoreApplication.translate("Form", u"START", None))
         self.iOUThresholdLabel_2.setText(QCoreApplication.translate("Form", u"Cosine Distance:", None))
+        self.addMaskBtn.setText(QCoreApplication.translate("Form", u"Add Mask", None))
+        self.maskChk.setText(QCoreApplication.translate("Form", u"Show Mask", None))
         self.countingGBox.setTitle(QCoreApplication.translate("Form", u"Counting", None))
+        self.countMethodCmb.setItemText(0, QCoreApplication.translate("Form", u"Vector", None))
+        self.countMethodCmb.setItemText(1, QCoreApplication.translate("Form", u"Finish Line", None))
+
         self.label_6.setText(QCoreApplication.translate("Form", u"Max Skipped Frames", None))
-        self.label_12.setText(QCoreApplication.translate("Form", u"Y:", None))
         self.countBtn.setText(QCoreApplication.translate("Form", u"Quick Count", None))
         self.countAnalyzeBtn.setText(QCoreApplication.translate("Form", u"Count + Analyze", None))
-        self.visualizeChk.setText(QCoreApplication.translate("Form", u"Visualize", None))
+        self.label_11.setText(QCoreApplication.translate("Form", u"X:", None))
         self.label_14.setText(QCoreApplication.translate("Form", u"Filter Vector Width", None))
+        self.label_16.setText(QCoreApplication.translate("Form", u"Method:", None))
         self.label_5.setText(QCoreApplication.translate("Form", u"Travel Distance (pixels)", None))
         self.label_4.setText(QCoreApplication.translate("Form", u"Filter Vector (pixels)", None))
-        self.label_11.setText(QCoreApplication.translate("Form", u"X:", None))
+        self.finishLineChk.setText(QCoreApplication.translate("Form", u"Show Finish Line", None))
+        self.label_12.setText(QCoreApplication.translate("Form", u"Y:", None))
+        self.visualizeChk.setText(QCoreApplication.translate("Form", u"Show Vector", None))
         self.label.setText(QCoreApplication.translate("Form", u"Trucks", None))
         self.label_2.setText(QCoreApplication.translate("Form", u"Cars", None))
         self.label_15.setText(QCoreApplication.translate("Form", u"Bus", None))

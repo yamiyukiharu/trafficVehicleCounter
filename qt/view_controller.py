@@ -11,7 +11,6 @@ import pyqtgraph as pg
 
 class ViewController(QWidget, Ui_Form):
     startInferenceSignal = Signal()
-    stopInferenceSignal = Signal()
     startCountingSignal = Signal()
     startCountingAnalysisSignal = Signal()
 
@@ -35,8 +34,8 @@ class ViewController(QWidget, Ui_Form):
         self.visualizeMarkerStart = QPoint(200,200)
         self.visualizeMarkerEnd = QPoint(500,500)
         self.visualizeMarker = pg.LineROI(self.visualizeMarkerStart, self.visualizeMarkerEnd, 50)
-        # self.frameView.addItem(self.visualizeMarker)
-
+        self.finishLine = pg.RectROI((200,200), (200,200), rotatable=True, resizable=True)
+        # self.finishLine.addRotateHandle((0.5,0), (0,0))
 
         self.setupSignalSlots()
         # development
@@ -53,9 +52,7 @@ class ViewController(QWidget, Ui_Form):
 
         self.setOutputFileBtn.clicked.connect(self.getOutputFileName)
         self.startInferenceBtn.clicked.connect(self.startInference)
-        self.stopInferenceBtn.clicked.connect(self.stopInference)
         self.startInferenceSignal.connect(self.model.startInference)
-        self.stopInferenceSignal.connect(self.model.stopInference)
         self.model.frame_update_signal.connect(self.updateFrame)
         self.model.max_frame_update_signal.connect(self.updateMaxFrameNum)
         self.loadCacheBtn.clicked.connect(self.openCacheFile)
@@ -65,9 +62,11 @@ class ViewController(QWidget, Ui_Form):
         self.startCountingAnalysisSignal.connect(self.model.startCountingAnalysis)
         self.model.vehicle_count_signal.connect(self.updateVehicleCount)
         self.model.process_done_signal.connect(self.onProcessDone)
+        self.stopProcessBtn.clicked.connect(self.stopProcess)
 
         self.frameSlider.valueChanged.connect(self.model.previewFrame)
         self.visualizeChk.toggled.connect(self.visualizeCountingParam)
+        self.finishLineChk.toggled.connect(self.showFinishLine)
 
 #====================== File Dialog Functions =====================
 
@@ -147,6 +146,15 @@ class ViewController(QWidget, Ui_Form):
 #================= Vehicle Counting Functions =========================
 
     @Slot(bool)
+    def showFinishLine(self, checked):
+        if checked:
+            self.frameView.addItem(self.finishLine)
+            # self.finishLine.sigRegionChangeFinished.connect(self.getFinishLineBounds)
+        else:
+            self.frameView.removeItem(self.finishLine)
+
+
+    @Slot(bool)
     def visualizeCountingParam(self, checked):
         if checked:
             # add arrow with length defined in distance
@@ -201,10 +209,6 @@ class ViewController(QWidget, Ui_Form):
         self.yFilterVectorSpn.setValue(dy)
         self.widthFilterVectorSpn.setValue(width)
 
-        print('start vis: ' + str(start.x()) + ',' + str(start.y()))
-        print('end vis: ' + str(end.x()) + ',' + str(end.y()))
-        print('###########################')
-
     def startCounting(self):
         if self.cacheDataFile != '':
             self.prepareforAnalysis()
@@ -247,8 +251,9 @@ class ViewController(QWidget, Ui_Form):
         self.prepareforAnalysis()
         self.startInferenceSignal.emit()
     
-    def stopInference(self):
+    def stopProcess(self):
         self.model.stopInference()
+        self.model.stopCountingAnalysis()
         self.enableControls(True)
 
 #=================== Helper Functions =========================
@@ -257,6 +262,7 @@ class ViewController(QWidget, Ui_Form):
         # set parameters
         self.model.setParams(
             {
+                'count_method'  : self.countMethodCmb.currentIndex(),
                 'iou_thresh'    : self.iouThreshSpn.value(),
                 'score_thresh'  : self.scoreThreshSpn.value(),
                 'cos_dist'      : self.cosineDistSpn.value(),
@@ -264,7 +270,8 @@ class ViewController(QWidget, Ui_Form):
                 'y_vect'        : self.yFilterVectorSpn.value(),
                 'filt_width'    : self.widthFilterVectorSpn.value(),
                 'filt_dist'     : self.distFilterSpn.value(),
-                'filt_frames'   : self.skipFrameFilterSpn.value()
+                'filt_frames'   : self.skipFrameFilterSpn.value(),
+                'finish_line'   : self.getFinishLineBounds(),
             }
         )
 
@@ -277,12 +284,24 @@ class ViewController(QWidget, Ui_Form):
 
         self.enableControls(False)
 
+    def getFinishLineBounds(self):
+        pos = self.finishLine.viewPos()
+        if pos is None:
+            return [0,0,0,0]
+            
+        size = self.finishLine.size()
+
+        return [int(pos.x()), int(pos.y()), int(size.x()), int(size.y())]
+
+        # print('start vis: ' + str(size.x()) + ',' + str(size.y()))
+        # print('###########################')
+
     def enableControls(self, state=True):
         self.mediaGBox.setEnabled(state)
         self.inferenceGBox.setEnabled(state)
         self.countingGBox.setEnabled(state)
         self.frameSlider.setEnabled(state)
-        self.stopInferenceBtn.setEnabled(not state)
+        self.stopProcessBtn.setEnabled(not state)
 
     def onProcessDone(self):
         self.enableControls(True)

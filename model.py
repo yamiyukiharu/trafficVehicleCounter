@@ -6,20 +6,21 @@ import matplotlib.pyplot as plt
 
 # deep sort imports
 from deep_sort import preprocessing, nn_matching
+from deep_sort import tracker
 from deep_sort.detection import Detection
 from deep_sort.tracker import Tracker
 
-import tensorflow as tf
-physical_devices = tf.config.experimental.list_physical_devices('GPU')
-if len(physical_devices) > 0:
-    tf.config.experimental.set_memory_growth(physical_devices[0], True)
-from tensorflow.python.saved_model import tag_constants
-from tensorflow.compat.v1 import ConfigProto
-from tensorflow.compat.v1 import Session
-from core.yolov4 import filter_boxes
-from core.config import cfg
-import core.utils as utils
-from tools import generate_detections as gdet
+# import tensorflow as tf
+# physical_devices = tf.config.experimental.list_physical_devices('GPU')
+# if len(physical_devices) > 0:
+#     tf.config.experimental.set_memory_growth(physical_devices[0], True)
+# from tensorflow.python.saved_model import tag_constants
+# from tensorflow.compat.v1 import ConfigProto
+# from tensorflow.compat.v1 import Session
+# from core.yolov4 import filter_boxes
+# from core.config import cfg
+# import core.utils as utils
+# from tools import generate_detections as gdet
 
 MAX_DETECTION_NUM = 50
 nn_budget = None
@@ -61,6 +62,10 @@ class Model(QObject):
         self.vid = None
         self.detected_vehicles = None
         self.frame_counter = 0
+        self.finishLine = (0,0,0,0)
+        self.stop_inference = True
+        self.stop_counting = True
+        self.count_method = 0
         self.initialize_counting()
 
         #initialize color map
@@ -101,6 +106,8 @@ class Model(QObject):
         self.filt_width = params['filt_width']
         self.filt_dist = params['filt_dist']
         self.filt_frame = params['filt_frames']
+        self.finishLine = params['finish_line']
+        self.count_method = params['count_method']
 
 #==================== Counting Functions ========================
 
@@ -134,34 +141,55 @@ class Model(QObject):
         # already counted this car, skip
         elif tracker_dict[uid]['counted'] == True:
             return True
-        
-        # reset distance travelled if previous detected frame is too far off
-        elif frame_num - tracker_dict[uid]['prev_frame_num'] > self.filt_frame:
+
+        # count with vector filter method
+        if self.count_method == 0:
+            # reset distance travelled if previous detected frame is too far off
+            if frame_num - tracker_dict[uid]['prev_frame_num'] > self.filt_frame:
+                tracker_dict[uid]['prev_centroid'] = centroid
+
+            # compute distance traveled
+            prev_centroid = tracker_dict[uid]['prev_centroid']
+            tracker_dict[uid]['dist'] = tracker_dict[uid]['dist'] + math.dist(prev_centroid, centroid)
             tracker_dict[uid]['prev_centroid'] = centroid
+            tracker_dict[uid]['prev_frame_num'] = frame_num
 
-        # compute distance traveled
-        prev_centroid = tracker_dict[uid]['prev_centroid']
-        tracker_dict[uid]['dist'] = tracker_dict[uid]['dist'] + math.dist(prev_centroid, centroid)
-        tracker_dict[uid]['prev_centroid'] = centroid
-        tracker_dict[uid]['prev_frame_num'] = frame_num
+            # count the object if distance traveled exceeds a threshold
+            if tracker_dict[uid]['dist'] > self.filt_dist:
+                # computer direction vector
+                initial_centroid = tracker_dict[uid]['initial_centroid']
+                vect = [cx - initial_centroid[0], cy - initial_centroid[1]]
 
-        # count the object if distance traveled exceeds a threshold
-        if tracker_dict[uid]['dist'] > self.filt_dist:
-            # computer direction vector
-            initial_centroid = tracker_dict[uid]['initial_centroid']
-            vect = [cx - initial_centroid[0], cy - initial_centroid[1]]
+                # only count vehicles travelling south
+                x_min = self.filt_x_vec - self.filt_width
+                x_max = self.filt_x_vec + self.filt_width
 
-            # only count vehicles travelling south
-            x_min = self.filt_x_vec - self.filt_width
-            x_max = self.filt_x_vec + self.filt_width
+                if (x_min < vect[0] < x_max) and (vect[1] > 0) == (self.filt_y_vec > 0):
+                    tracker_dict[uid]['counted'] = True
 
-            if (x_min < vect[0] < x_max) and (vect[1] > 0) == (self.filt_y_vec > 0):
-                tracker_dict[uid]['counted'] = True
+                    cnt = sum([param['counted'] for id, param in tracker_dict.items()])
+                    img = self.getVehicleImage(detection, frame)
+                    self.vehicle_count_signal.emit(class_id, int(uid), cnt, img)
+                    return True
 
-                cnt = sum([param['counted'] for id, param in tracker_dict.items()])
-                img = self.getVehicleImage(detection, frame)
-                self.vehicle_count_signal.emit(class_id, int(uid), cnt, img)
-                return True
+        # count with finishing line method  
+        elif self.count_method == 1:
+            bx = self.finishLine[0]
+            by = self.finishLine[1]
+            bw = self.finishLine[2]
+            bh = self.finishLine[3]
+
+            # check if centroid within bounds of finish line
+            if (cx > bx) and (cx < bx + bw) and (cy > by) and (cy < by + bh):
+                tracker_dict[uid]['dist'] += 1
+
+                if tracker_dict[uid]['dist'] > self.filt_frame:
+                    tracker_dict[uid]['counted'] = True
+                    cnt = sum([param['counted'] for id, param in tracker_dict.items()])
+                    img = self.getVehicleImage(detection, frame)
+                    self.vehicle_count_signal.emit(class_id, int(uid), cnt, img)
+                    return True
+        return False
 
     @Slot()
     def startCounting(self):
@@ -192,33 +220,39 @@ class Model(QObject):
                 
     @Slot()
     def analyzeFrames(self):
-        if self.counting_timer.isActive():   
-            success , frame = self.vid.read()
-            if success:
-                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                frame_data = self.cache_data[self.frame_counter]
-
-                for detection in frame_data:
-                    class_name = self.getClassName(str(detection[0]))
-                    uid = detection[1]
-                    x_min = detection[2]
-                    y_min = detection[3]
-                    x_max = detection[4]
-                    y_max = detection[5]
-
-                    detected = self.countVehicles(frame, self.frame_counter, detection)
-                    frame = self.drawBoundingBox(frame, class_name, uid, x_min, y_min, x_max, y_max, detected)
-
-                self.frame_counter += 1
-                self.frame_update_signal.emit(frame, self.frame_counter)
-            else:
-                self.counting_timer.stop()
-                self.frame_counter = 0
-                self.process_done_signal.emit()
-        else:
+        if not self.counting_timer.isActive():
             self.counting_timer.setInterval(30)
-            self.counting_timer.start()
+            self.counting_timer.start()   
+            return
+
+        success , frame = self.vid.read()
+        if success and not self.stop_counting:
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame_data = self.cache_data[self.frame_counter]
+
+            for detection in frame_data:
+                class_name = self.getClassName(str(detection[0]))
+                uid = detection[1]
+                x_min = detection[2]
+                y_min = detection[3]
+                x_max = detection[4]
+                y_max = detection[5]
+
+                detected = self.countVehicles(frame, self.frame_counter, detection)
+                frame = self.drawBoundingBox(frame, class_name, uid, x_min, y_min, x_max, y_max, detected)
+
+            self.frame_counter += 1
+            self.frame_update_signal.emit(frame, self.frame_counter)
+        else:
+            self.stop_counting = True
+            self.counting_timer.stop()
+            self.frame_counter = 0
+            self.process_done_signal.emit()
             
+    @Slot()
+    def stopCountingAnalysis(self):
+        self.stop_counting = True
+
     @Slot()
     def startCountingAnalysis(self):
         self.counting_timer = QTimer()
@@ -235,7 +269,7 @@ class Model(QObject):
 
         # reinitialize dict for counting
         self.detected_vehicles = {class_id : {} for class_name, class_id in class_id_map.items()}
-
+        self.stop_counting = False
         # go to first frame
         self.vid.set(cv2.CAP_PROP_POS_FRAMES, 0)
         self.analyzeFrames()
@@ -439,7 +473,7 @@ class Model(QObject):
                 # draw bbox on screen
                 frame = self.drawBoundingBox(frame, class_name, id, x_min, y_min, x_max, y_max, highlight=detected)
                 
-                obj_num = obj_num + 1
+                obj_num = obj_num +  1
 
             result = np.asarray(frame)
             result = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
@@ -494,8 +528,6 @@ class Model(QObject):
 
         if highlight:
             # highlight in green
-            frame = frame.astype(np.float)
             frame[y_min:y_max, x_min:x_max, 0] = 0
             frame[y_min:y_max, x_min:x_max, 2] = 0
-            frame = frame.astype(np.uint8)
         return frame
