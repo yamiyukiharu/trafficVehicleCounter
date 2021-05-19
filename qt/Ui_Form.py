@@ -290,6 +290,11 @@ class Ui_Form(object):
 
         self.horizontalLayout_6.addWidget(self.countBtn)
 
+        self.countAnalyzeBtn = QPushButton(self.countingGBox)
+        self.countAnalyzeBtn.setObjectName(u"countAnalyzeBtn")
+
+        self.horizontalLayout_6.addWidget(self.countAnalyzeBtn)
+
         self.visualizeChk = QCheckBox(self.countingGBox)
         self.visualizeChk.setObjectName(u"visualizeChk")
 
@@ -449,7 +454,7 @@ class Ui_Form(object):
         self.truckPreviewTable.setObjectName(u"truckPreviewTable")
         self.truckPreviewTable.setRowCount(30)
         self.truckPreviewTable.setColumnCount(2)
-        self.truckPreviewTable.horizontalHeader().setVisible(False)
+        self.truckPreviewTable.horizontalHeader().setVisible(True)
         self.truckPreviewTable.horizontalHeader().setMinimumSectionSize(110)
         self.truckPreviewTable.horizontalHeader().setDefaultSectionSize(110)
         self.truckPreviewTable.verticalHeader().setMinimumSectionSize(110)
@@ -518,7 +523,7 @@ class Ui_Form(object):
         self.visualizeChk.toggled.connect(self.distFilterSpn.setEnabled)
 
         self.videoSwitcher.setCurrentIndex(1)
-        self.previewTabWidget.setCurrentIndex(2)
+        self.previewTabWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(Form)
@@ -553,7 +558,8 @@ class Ui_Form(object):
         self.countingGBox.setTitle(QCoreApplication.translate("Form", u"Counting", None))
         self.label_6.setText(QCoreApplication.translate("Form", u"Max Skipped Frames", None))
         self.label_12.setText(QCoreApplication.translate("Form", u"Y:", None))
-        self.countBtn.setText(QCoreApplication.translate("Form", u"Count Offline", None))
+        self.countBtn.setText(QCoreApplication.translate("Form", u"Quick Count", None))
+        self.countAnalyzeBtn.setText(QCoreApplication.translate("Form", u"Count + Analyze", None))
         self.visualizeChk.setText(QCoreApplication.translate("Form", u"Visualize", None))
         self.label_14.setText(QCoreApplication.translate("Form", u"Filter Vector Width", None))
         self.label_5.setText(QCoreApplication.translate("Form", u"Travel Distance (pixels)", None))

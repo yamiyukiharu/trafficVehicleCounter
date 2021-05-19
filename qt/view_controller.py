@@ -13,6 +13,7 @@ class ViewController(QWidget, Ui_Form):
     startInferenceSignal = Signal()
     stopInferenceSignal = Signal()
     startCountingSignal = Signal()
+    startCountingAnalysisSignal = Signal()
 
     def __init__(self, model):
         super().__init__()
@@ -60,6 +61,8 @@ class ViewController(QWidget, Ui_Form):
         self.loadCacheBtn.clicked.connect(self.openCacheFile)
         self.countBtn.clicked.connect(self.startCounting)
         self.startCountingSignal.connect(self.model.startCounting)
+        self.countAnalyzeBtn.clicked.connect(self.startCountingAnalysis)
+        self.startCountingAnalysisSignal.connect(self.model.startCountingAnalysis)
         self.model.vehicle_count_signal.connect(self.updateVehicleCount)
         self.model.process_done_signal.connect(self.onProcessDone)
 
@@ -208,6 +211,14 @@ class ViewController(QWidget, Ui_Form):
             self.startCountingSignal.emit()
         else:
             QMessageBox.warning(self, 'Error', 'No cache file selected!')
+
+    def startCountingAnalysis(self):
+        if self.cacheDataFile != '':
+            self.prepareforAnalysis()
+            self.startCountingAnalysisSignal.emit()
+        else:
+            QMessageBox.warning(self, 'Error', 'No cache file selected!')
+
 
     @Slot(int,int,int,np.ndarray)
     def updateVehicleCount(self, class_id, uid, count, img):

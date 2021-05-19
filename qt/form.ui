@@ -421,7 +421,14 @@
             <item>
              <widget class="QPushButton" name="countBtn">
               <property name="text">
-               <string>Count Offline</string>
+               <string>Quick Count</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="countAnalyzeBtn">
+              <property name="text">
+               <string>Count + Analyze</string>
               </property>
              </widget>
             </item>
@@ -638,7 +645,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="truckPreviewTab">
         <attribute name="title">
@@ -669,7 +676,7 @@
             <number>2</number>
            </property>
            <attribute name="horizontalHeaderVisible">
-            <bool>false</bool>
+            <bool>true</bool>
            </attribute>
            <attribute name="horizontalHeaderMinimumSectionSize">
             <number>110</number>

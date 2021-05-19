@@ -1,5 +1,5 @@
 from typing import Dict
-from PySide2.QtCore import Signal, Slot, QObject
+from PySide2.QtCore import Signal, Slot, QObject, QTimer
 import cv2, h5py, math
 import numpy as np
 import matplotlib.pyplot as plt
@@ -41,11 +41,14 @@ class Model(QObject):
         self.cache_data = None
         self.vid = None
         self.detected_vehicles = None
+        self.frame_counter = 0
         self.initialize_counting()
 
         #initialize color map
         cmap = plt.get_cmap('tab20b')
         self.colors = [cmap(i)[:3] for i in np.linspace(0, 1, 20)]
+
+#======================= Setters  ===========================
 
     def initialize_counting(self):
         self.detected_vehicles = {class_id : {} for class_name, class_id in class_id_map.items()}
@@ -77,8 +80,7 @@ class Model(QObject):
         self.filt_dist = params['dist']
         self.filt_frame = params['frames']
 
-    def stopInference(self):
-        self.stop_inference = True
+#==================== Counting Functions ========================
 
     def countVehicles(self, frame, frame_num, detection) -> bool:
         class_id = detection[0]
@@ -139,6 +141,82 @@ class Model(QObject):
                 self.vehicle_count_signal.emit(class_id, int(uid), cnt, img)
                 return True
 
+    @Slot()
+    def startCounting(self):
+        if not self.validateInputFiles():
+            return
+
+        total_frames = int(self.vid.get(cv2.CAP_PROP_FRAME_COUNT))
+        
+        # tally total frame num in cahce data and video
+        if total_frames != self.cache_data.shape[0]:
+            self.error_signal.emit('Video and cache frame count does not match')
+            return
+
+        # reinitialize dict for counting
+        self.detected_vehicles = {class_id : {} for class_name, class_id in class_id_map.items()}
+
+        # go to first frame
+        self.vid.set(cv2.CAP_PROP_POS_FRAMES, 0)
+            
+        for frame_num, frame_data in enumerate(self.cache_data):
+            _, frame = self.vid.read()
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+            for detection in frame_data:
+                self.countVehicles(frame, frame_num, detection)
+                        
+        self.process_done_signal.emit()
+                
+    @Slot()
+    def analyzeFrames(self):
+        if self.counting_timer.isActive():   
+            success , frame = self.vid.read()
+            if success:
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                frame_data = self.cache_data[self.frame_counter]
+
+                for detection in frame_data:
+                    class_name = self.getClassName(str(detection[0]))
+                    uid = detection[1]
+                    x_min = detection[2]
+                    y_min = detection[3]
+                    x_max = detection[4]
+                    y_max = detection[5]
+
+                    detected = self.countVehicles(frame, self.frame_counter, detection)
+                    frame = self.drawBoundingBox(frame, class_name, uid, x_min, y_min, x_max, y_max, detected)
+
+                self.frame_counter += 1
+                self.frame_update_signal.emit(frame, self.frame_counter)
+            else:
+                self.counting_timer.stop()
+                self.frame_counter = 0
+                self.process_done_signal.emit()
+        else:
+            self.counting_timer.setInterval(30)
+            self.counting_timer.start()
+            
+    @Slot()
+    def startCountingAnalysis(self):
+        self.counting_timer = QTimer()
+        self.counting_timer.timeout.connect(self.analyzeFrames)
+        if not self.validateInputFiles():
+            return
+
+        total_frames = int(self.vid.get(cv2.CAP_PROP_FRAME_COUNT))
+        
+        # tally total frame num in cahce data and video
+        if total_frames != self.cache_data.shape[0]:
+            self.error_signal.emit('Video and cache frame count does not match')
+            return
+
+        # reinitialize dict for counting
+        self.detected_vehicles = {class_id : {} for class_name, class_id in class_id_map.items()}
+
+        # go to first frame
+        self.vid.set(cv2.CAP_PROP_POS_FRAMES, 0)
+        self.analyzeFrames()
 
     def validateInputFiles(self) -> bool:
         if self.cache_data is None:
@@ -177,56 +255,10 @@ class Model(QObject):
         # update frame signal
         self.frame_update_signal.emit(frame, frame_num)
 
-    @Slot()
-    def startCounting(self):
-        if not self.validateInputFiles():
-            return
+#==================== Inference Functions ========================
 
-        total_frames = int(self.vid.get(cv2.CAP_PROP_FRAME_COUNT))
-        
-        # tally total frame num in cahce data and video
-        if total_frames != self.cache_data.shape[0]:
-            self.error_signal.emit('Video and cache frame count does not match')
-            return
-
-        # reinitialize dict for counting
-        self.detected_vehicles = {class_id : {} for class_name, class_id in class_id_map.items()}
-
-        # go to first frame
-        self.vid.set(cv2.CAP_PROP_POS_FRAMES, 0)
-
-        for frame_num, frame_data in enumerate(self.cache_data):
-            _, frame = self.vid.read()
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            # self.frame_update_signal.emit(frame, frame_num)
-
-            for detection in frame_data:
-                self.countVehicles(frame, frame_num, detection)
-                        
-        self.process_done_signal.emit()
-                
-
-    def getVehicleImage(self, detection, frame) -> np.ndarray:
-        # xmin, ymin, xmax, ymax
-        x_min = detection[2]
-        y_min = detection[3]
-        x_max = detection[4]
-        y_max = detection[5]
-        width = x_max - x_min
-        height = y_max - y_min
-
-        img = frame[y_min:y_max, x_min:x_max]
-        return np.ascontiguousarray(img).copy()
-
-    def getClassId(self, class_name:str) -> int:
-        id = class_id_map.get(class_name)
-        if id is None:
-            id = 0
-        return id
-
-    def getClassName(self, class_id:int) -> str:
-        name =  class_id_map.get(class_id)
-        return name
+    def stopInference(self):
+        self.stop_inference = True
 
     @Slot()
     def startInference(self):
@@ -423,6 +455,29 @@ class Model(QObject):
 
         self.process_done_signal.emit()
 
+#==================== Helper Functions ========================
+
+    def getVehicleImage(self, detection, frame) -> np.ndarray:
+        # xmin, ymin, xmax, ymax
+        x_min = detection[2]
+        y_min = detection[3]
+        x_max = detection[4]
+        y_max = detection[5]
+        width = x_max - x_min
+        height = y_max - y_min
+
+        img = frame[y_min:y_max, x_min:x_max]
+        return np.ascontiguousarray(img).copy()
+
+    def getClassId(self, class_name:str) -> int:
+        id = class_id_map.get(class_name)
+        if id is None:
+            id = 0
+        return id
+
+    def getClassName(self, class_id:int) -> str:
+        name =  class_id_map.get(class_id)
+        return name
 
     def drawBoundingBox(self, frame:np.ndarray, class_name:str, id:int, x_min, y_min, x_max, y_max, highlight=False):
         color = self.colors[id % len(self.colors)]
