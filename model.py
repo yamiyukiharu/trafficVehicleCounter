@@ -9,13 +9,25 @@ from deep_sort import preprocessing, nn_matching
 from deep_sort.detection import Detection
 from deep_sort.tracker import Tracker
 
+import tensorflow as tf
+physical_devices = tf.config.experimental.list_physical_devices('GPU')
+if len(physical_devices) > 0:
+    tf.config.experimental.set_memory_growth(physical_devices[0], True)
+from tensorflow.python.saved_model import tag_constants
+from tensorflow.compat.v1 import ConfigProto
+from tensorflow.compat.v1 import Session
+from core.yolov4 import filter_boxes
+from core.config import cfg
+import core.utils as utils
+from tools import generate_detections as gdet
+
 MAX_DETECTION_NUM = 50
-max_cosine_distance = 0.4
 nn_budget = None
 nms_max_overlap = 1.0
-iou_thresh = 0.45
-score_thresh = 0.7
 input_size = 416
+
+model_filename = 'model_data/mars-small128.pb'
+weights_path = './checkpoints/yolov4-416'
 
 class_id_map = {
     'none'  : '0',
@@ -35,6 +47,13 @@ class Model(QObject):
     def __init__(self):
         super().__init__()
         # Definition of the parameters
+        self.sess = None
+        self.infer = None
+        self.encoder = None
+        self.saved_model_loaded = None
+        self.max_cosine_distance = 0.4
+        self.iou_thresh = 0.45
+        self.score_thresh = 0.7
         self.input_video_path = ''
         self.output_video_path = ''
         self.output_data_path = ''
@@ -71,14 +90,17 @@ class Model(QObject):
         cache_data = cache.get('dataset_1')
         self.cache_data = np.array(cache_data)
 
-        self.max_frame_update_signal.emit(self.cache_data.shape[0])
+        self.max_frame_update_signal.emit(self.cache_data.shape[0])        
 
-    def setCountingFilter(self, params:dict):
+    def setParams(self, params:dict):
+        self.iou_thresh = params['iou_thresh']
+        self.score_thresh = params['score_thresh']
+        self.max_cosine_distance = params['cos_dist']
         self.filt_x_vec = params['x_vect']
         self.filt_y_vec = params['y_vect']
-        self.filt_width = params['width']
-        self.filt_dist = params['dist']
-        self.filt_frame = params['frames']
+        self.filt_width = params['filt_width']
+        self.filt_dist = params['filt_dist']
+        self.filt_frame = params['filt_frames']
 
 #==================== Counting Functions ========================
 
@@ -268,36 +290,20 @@ class Model(QObject):
         self.stop_inference = False
         self.detected_vehicles = {class_id : {} for class_name, class_id in class_id_map.items()}
 
-        import tensorflow as tf
-        physical_devices = tf.config.experimental.list_physical_devices('GPU')
-        if len(physical_devices) > 0:
-            tf.config.experimental.set_memory_growth(physical_devices[0], True)
-        from tensorflow.python.saved_model import tag_constants
-        from tensorflow.compat.v1 import ConfigProto
-        from tensorflow.compat.v1 import Session
-        from core.yolov4 import filter_boxes
-        from core.config import cfg
-        import core.utils as utils
-        from tools import generate_detections as gdet
-
-        # initialize deep sort
-        model_filename = 'model_data/mars-small128.pb'
-        encoder = gdet.create_box_encoder(model_filename, batch_size=1)
         # calculate cosine distance metric
-        metric = nn_matching.NearestNeighborDistanceMetric("cosine", max_cosine_distance, nn_budget)
+        metric = nn_matching.NearestNeighborDistanceMetric("cosine", self.max_cosine_distance, nn_budget)
         # initialize tracker
         tracker = Tracker(metric)
-        print('deepsort')
 
-        # load configuration for object detector
-        config = ConfigProto()
-        config.gpu_options.allow_growth = True
-        session = Session(config=config)
-
-        # load standard tensorflow saved model
-        weights_path = './checkpoints/yolov4-416'
-        saved_model_loaded = tf.saved_model.load(weights_path)
-        infer = saved_model_loaded.signatures['serving_default']
+        # load standard tensorflow saved model for YOLO and Deepsort
+        if self.sess is None:
+            # load configuration for object detector
+            config = ConfigProto()
+            config.gpu_options.allow_growth = True
+            self.sess = Session(config=config)
+            self.saved_model_loaded = tf.saved_model.load(weights_path)
+            self.infer = self.saved_model_loaded.signatures['serving_default']
+            self.encoder = gdet.create_box_encoder(model_filename, batch_size=1)
 
         # begin video capture
         total_frames = int(self.vid.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -340,7 +346,7 @@ class Model(QObject):
             image_data = image_data[np.newaxis, ...].astype(np.float32)
 
             batch_data = tf.constant(image_data)
-            pred_bbox = infer(batch_data)
+            pred_bbox = self.infer(batch_data)
             for key, value in pred_bbox.items():
                 boxes = value[:, :, 0:4]
                 pred_conf = value[:, :, 4:]
@@ -351,8 +357,8 @@ class Model(QObject):
                     pred_conf, (tf.shape(pred_conf)[0], -1, tf.shape(pred_conf)[-1])),
                 max_output_size_per_class=MAX_DETECTION_NUM,
                 max_total_size=MAX_DETECTION_NUM,
-                iou_threshold= iou_thresh,
-                score_threshold= score_thresh
+                iou_threshold= self.iou_thresh,
+                score_threshold= self.score_thresh
             )
 
             # convert data to numpy arrays and slice out unused elements
@@ -395,7 +401,7 @@ class Model(QObject):
             scores = np.delete(scores, deleted_indx, axis=0)
 
             # encode yolo detections and feed to tracker
-            features = encoder(frame, bboxes)
+            features = self.encoder(frame, bboxes)
             detections = [Detection(bbox, score, class_name, feature) for bbox, score, class_name, feature in zip(bboxes, scores, names, features)]
 
             # run non-maxima supression
@@ -489,7 +495,7 @@ class Model(QObject):
         if highlight:
             # highlight in green
             frame = frame.astype(np.float)
-            frame[y_min:y_max, x_min:x_max, 0] = np.absolute(frame[y_min:y_max, x_min:x_max, 2] - frame[y_min:y_max, x_min:x_max, 1])
-            frame[y_min:y_max, x_min:x_max, 2] = frame[y_min:y_max, x_min:x_max, 0]
+            frame[y_min:y_max, x_min:x_max, 0] = 0
+            frame[y_min:y_max, x_min:x_max, 2] = 0
             frame = frame.astype(np.uint8)
         return frame

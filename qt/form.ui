@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1105</width>
-    <height>737</height>
+    <height>809</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -301,31 +301,38 @@
             </item>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <widget class="QLabel" name="iOUThresholdLabel">
             <property name="text">
              <string>IOU Threshold:</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="confidenceThresholdLabel">
             <property name="text">
              <string>Score Threshold</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="confidenceThresholdDoubleSpinBox"/>
+          <item row="3" column="1">
+           <widget class="QDoubleSpinBox" name="scoreThreshSpn">
+            <property name="decimals">
+             <number>1</number>
+            </property>
+            <property name="value">
+             <double>0.700000000000000</double>
+            </property>
+           </widget>
           </item>
-          <item row="4" column="0">
+          <item row="5" column="0">
            <widget class="QLabel" name="label_7">
             <property name="text">
              <string>Output File:</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
+          <item row="5" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_4">
             <property name="spacing">
              <number>1</number>
@@ -352,13 +359,51 @@
             </item>
            </layout>
           </item>
-          <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="iOUThresholdDoubleSpinBox"/>
+          <item row="2" column="1">
+           <widget class="QDoubleSpinBox" name="iouThreshSpn">
+            <property name="decimals">
+             <number>2</number>
+            </property>
+            <property name="value">
+             <double>0.450000000000000</double>
+            </property>
+           </widget>
           </item>
-          <item row="5" column="1">
+          <item row="6" column="1">
            <widget class="QPushButton" name="startInferenceBtn">
             <property name="text">
              <string>START</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="iOUThresholdLabel_2">
+            <property name="text">
+             <string>Cosine Distance:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="cosineDistSpn">
+            <property name="decimals">
+             <number>1</number>
+            </property>
+            <property name="value">
+             <double>0.400000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1">
+           <widget class="QPushButton" name="addMaskBtn">
+            <property name="text">
+             <string>Add Mask</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QCheckBox" name="maskChk">
+            <property name="text">
+             <string>Show Mask</string>
             </property>
            </widget>
           </item>
@@ -405,7 +450,7 @@
              <double>1000.000000000000000</double>
             </property>
             <property name="value">
-             <double>-250.000000000000000</double>
+             <double>-258.000000000000000</double>
             </property>
            </widget>
           </item>
@@ -460,7 +505,7 @@
              <double>1000.000000000000000</double>
             </property>
             <property name="value">
-             <double>300.000000000000000</double>
+             <double>357.000000000000000</double>
             </property>
            </widget>
           </item>
@@ -470,7 +515,7 @@
              <number>1000</number>
             </property>
             <property name="value">
-             <number>400</number>
+             <number>440</number>
             </property>
            </widget>
           </item>
@@ -508,7 +553,7 @@
              <number>1000</number>
             </property>
             <property name="value">
-             <number>200</number>
+             <number>192</number>
             </property>
            </widget>
           </item>

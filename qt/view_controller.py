@@ -255,13 +255,16 @@ class ViewController(QWidget, Ui_Form):
 
     def prepareforAnalysis(self):
         # set parameters
-        self.model.setCountingFilter(
+        self.model.setParams(
             {
-                'x_vect': self.xFilterVectorSpn.value(),
-                'y_vect': self.yFilterVectorSpn.value(),
-                'width' : self.widthFilterVectorSpn.value(),
-                'dist'  : self.distFilterSpn.value(),
-                'frames': self.skipFrameFilterSpn.value()
+                'iou_thresh'    : self.iouThreshSpn.value(),
+                'score_thresh'  : self.scoreThreshSpn.value(),
+                'cos_dist'      : self.cosineDistSpn.value(),
+                'x_vect'        : self.xFilterVectorSpn.value(),
+                'y_vect'        : self.yFilterVectorSpn.value(),
+                'filt_width'    : self.widthFilterVectorSpn.value(),
+                'filt_dist'     : self.distFilterSpn.value(),
+                'filt_frames'   : self.skipFrameFilterSpn.value()
             }
         )
 

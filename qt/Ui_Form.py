@@ -206,22 +206,24 @@ class Ui_Form(object):
         self.iOUThresholdLabel = QLabel(self.inferenceGBox)
         self.iOUThresholdLabel.setObjectName(u"iOUThresholdLabel")
 
-        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.iOUThresholdLabel)
+        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.iOUThresholdLabel)
 
         self.confidenceThresholdLabel = QLabel(self.inferenceGBox)
         self.confidenceThresholdLabel.setObjectName(u"confidenceThresholdLabel")
 
-        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.confidenceThresholdLabel)
+        self.formLayout.setWidget(3, QFormLayout.LabelRole, self.confidenceThresholdLabel)
 
-        self.confidenceThresholdDoubleSpinBox = QDoubleSpinBox(self.inferenceGBox)
-        self.confidenceThresholdDoubleSpinBox.setObjectName(u"confidenceThresholdDoubleSpinBox")
+        self.scoreThreshSpn = QDoubleSpinBox(self.inferenceGBox)
+        self.scoreThreshSpn.setObjectName(u"scoreThreshSpn")
+        self.scoreThreshSpn.setDecimals(1)
+        self.scoreThreshSpn.setValue(0.700000000000000)
 
-        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.confidenceThresholdDoubleSpinBox)
+        self.formLayout.setWidget(3, QFormLayout.FieldRole, self.scoreThreshSpn)
 
         self.label_7 = QLabel(self.inferenceGBox)
         self.label_7.setObjectName(u"label_7")
 
-        self.formLayout.setWidget(4, QFormLayout.LabelRole, self.label_7)
+        self.formLayout.setWidget(5, QFormLayout.LabelRole, self.label_7)
 
         self.horizontalLayout_4 = QHBoxLayout()
         self.horizontalLayout_4.setSpacing(1)
@@ -243,17 +245,31 @@ class Ui_Form(object):
         self.horizontalLayout_4.addWidget(self.setOutputFileBtn)
 
 
-        self.formLayout.setLayout(4, QFormLayout.FieldRole, self.horizontalLayout_4)
+        self.formLayout.setLayout(5, QFormLayout.FieldRole, self.horizontalLayout_4)
 
-        self.iOUThresholdDoubleSpinBox = QDoubleSpinBox(self.inferenceGBox)
-        self.iOUThresholdDoubleSpinBox.setObjectName(u"iOUThresholdDoubleSpinBox")
+        self.iouThreshSpn = QDoubleSpinBox(self.inferenceGBox)
+        self.iouThreshSpn.setObjectName(u"iouThreshSpn")
+        self.iouThreshSpn.setDecimals(2)
+        self.iouThreshSpn.setValue(0.450000000000000)
 
-        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.iOUThresholdDoubleSpinBox)
+        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.iouThreshSpn)
 
         self.startInferenceBtn = QPushButton(self.inferenceGBox)
         self.startInferenceBtn.setObjectName(u"startInferenceBtn")
 
-        self.formLayout.setWidget(5, QFormLayout.FieldRole, self.startInferenceBtn)
+        self.formLayout.setWidget(6, QFormLayout.FieldRole, self.startInferenceBtn)
+
+        self.iOUThresholdLabel_2 = QLabel(self.inferenceGBox)
+        self.iOUThresholdLabel_2.setObjectName(u"iOUThresholdLabel_2")
+
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.iOUThresholdLabel_2)
+
+        self.cosineDistSpn = QDoubleSpinBox(self.inferenceGBox)
+        self.cosineDistSpn.setObjectName(u"cosineDistSpn")
+        self.cosineDistSpn.setDecimals(1)
+        self.cosineDistSpn.setValue(0.400000000000000)
+
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.cosineDistSpn)
 
 
         self.horizontalLayout_2.addWidget(self.inferenceGBox)
@@ -555,6 +571,7 @@ class Ui_Form(object):
         self.label_7.setText(QCoreApplication.translate("Form", u"Output File:", None))
         self.setOutputFileBtn.setText(QCoreApplication.translate("Form", u"...", None))
         self.startInferenceBtn.setText(QCoreApplication.translate("Form", u"START", None))
+        self.iOUThresholdLabel_2.setText(QCoreApplication.translate("Form", u"Cosine Distance:", None))
         self.countingGBox.setTitle(QCoreApplication.translate("Form", u"Counting", None))
         self.label_6.setText(QCoreApplication.translate("Form", u"Max Skipped Frames", None))
         self.label_12.setText(QCoreApplication.translate("Form", u"Y:", None))
