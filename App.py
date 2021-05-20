@@ -15,9 +15,9 @@ class App(QApplication):
         super().__init__()
         self.modelThread = QThread()
         self.model = Model()
-        self.model.moveToThread(self.modelThread)
-        self.modelThread.start()
-        self.modelThread.setPriority(QThread.HighestPriority)
+        # self.model.moveToThread(self.modelThread)
+        # self.modelThread.start()
+        # self.modelThread.setPriority(QThread.HighestPriority)
 
         self.viewController = ViewController(self.model)
         self.viewController.show()

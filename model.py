@@ -66,6 +66,7 @@ class Model(QObject):
         self.stop_inference = True
         self.stop_counting = True
         self.count_method = 0
+        self.imgMask = None
         self.initialize_counting()
 
         #initialize color map
@@ -80,6 +81,10 @@ class Model(QObject):
     def setInputVideoPath(self, path):
         self.input_video_path = path
         self.vid = cv2.VideoCapture(self.input_video_path)
+        _, frame = self.vid.read()
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        self.frame_update_signal.emit(frame, 0)
+        
 
     def setOutputVideoPath(self, path):
         self.output_video_path = path
@@ -98,6 +103,7 @@ class Model(QObject):
         self.max_frame_update_signal.emit(self.cache_data.shape[0])        
 
     def setParams(self, params:dict):
+        self.imgMask = params['mask']
         self.iou_thresh = params['iou_thresh']
         self.score_thresh = params['score_thresh']
         self.max_cosine_distance = params['cos_dist']
@@ -212,6 +218,7 @@ class Model(QObject):
         for frame_num, frame_data in enumerate(self.cache_data):
             _, frame = self.vid.read()
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame = cv2.bitwise_and(frame, frame, mask=self.imgMask)
 
             for detection in frame_data:
                 self.countVehicles(frame, frame_num, detection)
@@ -228,6 +235,7 @@ class Model(QObject):
         success , frame = self.vid.read()
         if success and not self.stop_counting:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame = cv2.bitwise_and(frame, frame, mask=self.imgMask)
             frame_data = self.cache_data[self.frame_counter]
 
             for detection in frame_data:
@@ -371,6 +379,8 @@ class Model(QObject):
             return_value, frame = self.vid.read()
             if return_value:
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                frame = cv2.bitwise_and(frame, frame, mask=self.imgMask)
+
             else:
                 print('Video has ended or failed, try a different video format!')
                 break

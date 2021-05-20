@@ -30,6 +30,7 @@ class ViewController(QWidget, Ui_Form):
         self.frameView.ui.roiBtn.hide()
         self.frameView.ui.menuBtn.hide()
         self.frameView.view.setMouseEnabled(False,False)
+        self.imgMask = None
         
         self.visualizeMarkerStart = QPoint(200,200)
         self.visualizeMarkerEnd = QPoint(500,500)
@@ -63,6 +64,8 @@ class ViewController(QWidget, Ui_Form):
         self.model.vehicle_count_signal.connect(self.updateVehicleCount)
         self.model.process_done_signal.connect(self.onProcessDone)
         self.stopProcessBtn.clicked.connect(self.stopProcess)
+        self.drawMaskBtn.clicked.connect(self.drawMask)
+        self.resetMaskBtn.clicked.connect(self.resetMask)
 
         self.frameSlider.valueChanged.connect(self.model.previewFrame)
         self.visualizeChk.toggled.connect(self.visualizeCountingParam)
@@ -256,12 +259,51 @@ class ViewController(QWidget, Ui_Form):
         self.model.stopCountingAnalysis()
         self.enableControls(True)
 
+    def resetMask(self):
+        if self.frameView.image is None:
+            QMessageBox.warning(self, 'Error', 'No image to mask!')
+            return
+        self.maskPreview = self.frameView.image
+        self.imgMask = np.ones(self.frameView.image.shape[:2], dtype = np.uint8)
+
+    def drawMask(self):
+        if self.imgMask is None:
+            self.resetMask()
+        self.drawing = False
+        cv2.namedWindow('Mask')
+        cv2.setMouseCallback('Mask', self.maskMouse)
+        cv2.imshow('Mask', self.maskPreview)
+            
+
+    def maskMouse(self, event, x, y, flags, param):
+        if event == cv2.EVENT_LBUTTONDOWN:
+            self.drawing = True
+            cv2.circle(self.maskPreview, (x,y), self.maskStokeSpn.value(), [0,255,0], -1)
+            cv2.circle(self.imgMask, (x,y), self.maskStokeSpn.value(), 0, -1)
+
+        elif event == cv2.EVENT_MOUSEMOVE:
+            if self.drawing == True:
+                cv2.circle(self.maskPreview, (x, y), self.maskStokeSpn.value(), [0,255,0], -1)
+                cv2.circle(self.imgMask, (x, y), self.maskStokeSpn.value(), 0, -1)
+
+        elif event == cv2.EVENT_LBUTTONUP:
+            if self.drawing == True:
+                self.drawing = False
+                cv2.circle(self.maskPreview, (x, y), self.maskStokeSpn.value(), [0,255,0], -1)
+                cv2.circle(self.imgMask, (x, y), self.maskStokeSpn.value(), 0, -1)
+                img = cv2.bitwise_and(self.frameView.image, self.frameView.image, mask=self.imgMask)
+                self.frameView.setImage(img)
+                print(self.imgMask.shape)
+        cv2.imshow('Mask', self.maskPreview)
+        
+
 #=================== Helper Functions =========================
 
     def prepareforAnalysis(self):
         # set parameters
         self.model.setParams(
             {
+                'mask'          : self.imgMask,
                 'count_method'  : self.countMethodCmb.currentIndex(),
                 'iou_thresh'    : self.iouThreshSpn.value(),
                 'score_thresh'  : self.scoreThreshSpn.value(),
@@ -288,7 +330,7 @@ class ViewController(QWidget, Ui_Form):
         pos = self.finishLine.viewPos()
         if pos is None:
             return [0,0,0,0]
-            
+
         size = self.finishLine.size()
 
         return [int(pos.x()), int(pos.y()), int(size.x()), int(size.y())]
@@ -313,13 +355,9 @@ class ViewController(QWidget, Ui_Form):
 
     @Slot(np.ndarray, int)
     def updateFrame(self, cv_img, frame_num):
-        # """Updates the image_label with a new opencv image"""
-        # qt_img = self.convert_cv_qt(cv_img, self.frameLabel.width(), self.frameLabel.height())
-        # self.frameLabel.setPixmap(qt_img)
-        self.frameView.setImage(cv_img)
-        # self.frameView.view.setAspectLocked(False)
         self.frameView.view.setXRange(0, cv_img.shape[1])
         self.frameView.view.setYRange(0, cv_img.shape[0])
+        self.frameView.setImage(cv_img)
         self.frameNum.setText(str(frame_num))
     
     def convert_cv_qt(self, rgb_image, width, height):

@@ -271,15 +271,27 @@ class Ui_Form(object):
 
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.cosineDistSpn)
 
-        self.addMaskBtn = QPushButton(self.inferenceGBox)
-        self.addMaskBtn.setObjectName(u"addMaskBtn")
+        self.maskStokeSpn = QSpinBox(self.inferenceGBox)
+        self.maskStokeSpn.setObjectName(u"maskStokeSpn")
+        self.maskStokeSpn.setMaximum(200)
+        self.maskStokeSpn.setValue(50)
 
-        self.formLayout.setWidget(7, QFormLayout.FieldRole, self.addMaskBtn)
+        self.formLayout.setWidget(9, QFormLayout.FieldRole, self.maskStokeSpn)
 
-        self.maskChk = QCheckBox(self.inferenceGBox)
-        self.maskChk.setObjectName(u"maskChk")
+        self.label_17 = QLabel(self.inferenceGBox)
+        self.label_17.setObjectName(u"label_17")
 
-        self.formLayout.setWidget(7, QFormLayout.LabelRole, self.maskChk)
+        self.formLayout.setWidget(9, QFormLayout.LabelRole, self.label_17)
+
+        self.resetMaskBtn = QPushButton(self.inferenceGBox)
+        self.resetMaskBtn.setObjectName(u"resetMaskBtn")
+
+        self.formLayout.setWidget(8, QFormLayout.FieldRole, self.resetMaskBtn)
+
+        self.drawMaskBtn = QPushButton(self.inferenceGBox)
+        self.drawMaskBtn.setObjectName(u"drawMaskBtn")
+
+        self.formLayout.setWidget(8, QFormLayout.LabelRole, self.drawMaskBtn)
 
 
         self.horizontalLayout_2.addWidget(self.inferenceGBox)
@@ -599,8 +611,9 @@ class Ui_Form(object):
         self.setOutputFileBtn.setText(QCoreApplication.translate("Form", u"...", None))
         self.startInferenceBtn.setText(QCoreApplication.translate("Form", u"START", None))
         self.iOUThresholdLabel_2.setText(QCoreApplication.translate("Form", u"Cosine Distance:", None))
-        self.addMaskBtn.setText(QCoreApplication.translate("Form", u"Add Mask", None))
-        self.maskChk.setText(QCoreApplication.translate("Form", u"Show Mask", None))
+        self.label_17.setText(QCoreApplication.translate("Form", u"Mask Stroke Thickness:", None))
+        self.resetMaskBtn.setText(QCoreApplication.translate("Form", u"Reset Mask", None))
+        self.drawMaskBtn.setText(QCoreApplication.translate("Form", u"Draw Mask", None))
         self.countingGBox.setTitle(QCoreApplication.translate("Form", u"Counting", None))
         self.countMethodCmb.setItemText(0, QCoreApplication.translate("Form", u"Vector", None))
         self.countMethodCmb.setItemText(1, QCoreApplication.translate("Form", u"Finish Line", None))
