@@ -234,8 +234,8 @@ class Model(QObject):
 
         success , frame = self.vid.read()
         if success and not self.stop_counting:
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            frame = cv2.bitwise_and(frame, frame, mask=self.imgMask)
+            frame_original = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame = cv2.bitwise_and(frame_original, frame_original, mask=self.imgMask)
             frame_data = self.cache_data[self.frame_counter]
 
             for detection in frame_data:
@@ -247,7 +247,7 @@ class Model(QObject):
                 y_max = detection[5]
 
                 detected = self.countVehicles(frame, self.frame_counter, detection)
-                frame = self.drawBoundingBox(frame, class_name, uid, x_min, y_min, x_max, y_max, detected)
+                frame = self.drawBoundingBox(frame_original, class_name, uid, x_min, y_min, x_max, y_max, detected)
 
             self.frame_counter += 1
             self.frame_update_signal.emit(frame, self.frame_counter)
@@ -378,8 +378,8 @@ class Model(QObject):
 
             return_value, frame = self.vid.read()
             if return_value:
-                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                frame = cv2.bitwise_and(frame, frame, mask=self.imgMask)
+                frame_original = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                frame = cv2.bitwise_and(frame_original, frame_original, mask=self.imgMask)
 
             else:
                 print('Video has ended or failed, try a different video format!')
@@ -481,7 +481,7 @@ class Model(QObject):
                 detected = self.countVehicles(frame, frame_num, frame_data[obj_num])
 
                 # draw bbox on screen
-                frame = self.drawBoundingBox(frame, class_name, id, x_min, y_min, x_max, y_max, highlight=detected)
+                frame = self.drawBoundingBox(frame_original, class_name, id, x_min, y_min, x_max, y_max, highlight=detected)
                 
                 obj_num = obj_num +  1
 
