@@ -305,20 +305,20 @@ class Ui_Form(object):
 
         self.horizontalLayout_2.addWidget(self.inferenceGBox)
 
-        self.CountingGBox = QGroupBox(Form)
-        self.CountingGBox.setObjectName(u"CountingGBox")
-        self.verticalLayout_8 = QVBoxLayout(self.CountingGBox)
+        self.countingGBox = QGroupBox(Form)
+        self.countingGBox.setObjectName(u"countingGBox")
+        self.verticalLayout_8 = QVBoxLayout(self.countingGBox)
         self.verticalLayout_8.setSpacing(2)
         self.verticalLayout_8.setObjectName(u"verticalLayout_8")
         self.verticalLayout_8.setContentsMargins(8, 8, 8, 8)
         self.horizontalLayout_7 = QHBoxLayout()
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
-        self.label_16 = QLabel(self.CountingGBox)
+        self.label_16 = QLabel(self.countingGBox)
         self.label_16.setObjectName(u"label_16")
 
         self.horizontalLayout_7.addWidget(self.label_16)
 
-        self.countMethodCmb = QComboBox(self.CountingGBox)
+        self.countMethodCmb = QComboBox(self.countingGBox)
         self.countMethodCmb.addItem("")
         self.countMethodCmb.addItem("")
         self.countMethodCmb.setObjectName(u"countMethodCmb")
@@ -328,7 +328,7 @@ class Ui_Form(object):
 
         self.verticalLayout_8.addLayout(self.horizontalLayout_7)
 
-        self.countingMethodSwitcher = QStackedWidget(self.CountingGBox)
+        self.countingMethodSwitcher = QStackedWidget(self.countingGBox)
         self.countingMethodSwitcher.setObjectName(u"countingMethodSwitcher")
         self.vectorPage = QWidget()
         self.vectorPage.setObjectName(u"vectorPage")
@@ -448,12 +448,12 @@ class Ui_Form(object):
 
         self.horizontalLayout_6 = QHBoxLayout()
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
-        self.countAnalyzeBtn = QPushButton(self.CountingGBox)
+        self.countAnalyzeBtn = QPushButton(self.countingGBox)
         self.countAnalyzeBtn.setObjectName(u"countAnalyzeBtn")
 
         self.horizontalLayout_6.addWidget(self.countAnalyzeBtn)
 
-        self.countBtn = QPushButton(self.CountingGBox)
+        self.countBtn = QPushButton(self.countingGBox)
         self.countBtn.setObjectName(u"countBtn")
 
         self.horizontalLayout_6.addWidget(self.countBtn)
@@ -462,7 +462,7 @@ class Ui_Form(object):
         self.verticalLayout_8.addLayout(self.horizontalLayout_6)
 
 
-        self.horizontalLayout_2.addWidget(self.CountingGBox)
+        self.horizontalLayout_2.addWidget(self.countingGBox)
 
 
         self.verticalLayout_2.addLayout(self.horizontalLayout_2)
@@ -641,7 +641,7 @@ class Ui_Form(object):
     # setupUi
 
     def retranslateUi(self, Form):
-        Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
+        Form.setWindowTitle(QCoreApplication.translate("Form", u"Traffic Vehicle Counter", None))
         self.videoSwitcher.setTitle(QCoreApplication.translate("Form", u"Video", None))
         self.stopProcessBtn.setText(QCoreApplication.translate("Form", u"STOP", None))
         self.frameNum.setText(QCoreApplication.translate("Form", u"0", None))
@@ -669,7 +669,7 @@ class Ui_Form(object):
         self.label_7.setText(QCoreApplication.translate("Form", u"Output File:", None))
         self.setOutputFileBtn.setText(QCoreApplication.translate("Form", u"...", None))
         self.startInferenceBtn.setText(QCoreApplication.translate("Form", u"START", None))
-        self.CountingGBox.setTitle(QCoreApplication.translate("Form", u"Counting", None))
+        self.countingGBox.setTitle(QCoreApplication.translate("Form", u"Counting", None))
         self.label_16.setText(QCoreApplication.translate("Form", u"Method:", None))
         self.countMethodCmb.setItemText(0, QCoreApplication.translate("Form", u"Vector", None))
         self.countMethodCmb.setItemText(1, QCoreApplication.translate("Form", u"Finish Line", None))

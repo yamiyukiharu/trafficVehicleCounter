@@ -93,7 +93,6 @@ class ViewController(QWidget, Ui_Form):
             self.maskFileLbl.setText(self.maskFile)
             self.imgMask = self.model.getMask()
             self.maskPreview = cv2.bitwise_and(self.frameView.image, self.frameView.image, mask=self.imgMask)
-            # self.showMaskOnFrame()
 
     def saveMask(self):
         if self.imgMask is None:
@@ -249,11 +248,7 @@ class ViewController(QWidget, Ui_Form):
         self.drawing = False
         cv2.namedWindow('Mask')
         cv2.setMouseCallback('Mask', self.maskMouse)
-        cv2.imshow('Mask', self.maskPreview)
-
-    def showMaskOnFrame(self):
-        img = cv2.bitwise_and(self.frameView.image, self.frameView.image, mask=self.imgMask)
-        self.frameView.setImage(img)            
+        cv2.imshow('Mask', self.maskPreview)    
 
     def maskMouse(self, event, x, y, flags, param):
         if event == cv2.EVENT_LBUTTONDOWN:
@@ -271,7 +266,6 @@ class ViewController(QWidget, Ui_Form):
                 self.drawing = False
                 cv2.circle(self.maskPreview, (x, y), self.maskStokeSpn.value(), [0,0,0], -1)
                 cv2.circle(self.imgMask, (x, y), self.maskStokeSpn.value(), 0, -1)
-                # self.showMaskOnFrame()
         cv2.imshow('Mask', self.maskPreview)
         
 

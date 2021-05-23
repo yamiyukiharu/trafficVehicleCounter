@@ -33,9 +33,23 @@ YoloV4 and DeepSORT code are taken from: https://github.com/theAIGuysCode/yolov4
 ### Vehicle Counting
 ---
 #### **Finish Line Detection**
-
+![Alt text](docs/finish_line_method.gif)  
+A rectangle region of interest (ROI) is defined, such that when the centroid of the detection bounding box is present in the ROI for more than X frames, the vehicle is counted  
 ![Alt text](docs/diagrams-finish_line.png)
-#### Travel Vector Filtering
+<br></br>
+
+#### **Travel Vector Filtering**
+![Alt text](docs/travel_vector_method.gif)  
+A vector is defined with the following:
+- Direction (travel direction of vehicle)
+- Magnitude (pixels traveled by vehicle)
+- width (tolerance of travel direction)
+
+For each detection, the travel and direction is computed and filtered out based on the vector defined above. 
+
+The detection that passes the filter will be counted  
+![Alt text](docs/diagrams-vector_visualization.png)
+
 ![Alt text](docs/diagrams-travel_vector.png)
 
 ## Software Architecture
