@@ -15,7 +15,6 @@ from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
     QPixmap, QRadialGradient)
 from PySide2.QtWidgets import *
 
-from PySide2.QtMultimediaWidgets import QVideoWidget
 from pyqtgraph import ImageView
 
 
@@ -23,82 +22,27 @@ class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(1158, 788)
+        Form.resize(1033, 820)
         self.horizontalLayout = QHBoxLayout(Form)
         self.horizontalLayout.setSpacing(5)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout.setContentsMargins(8, 8, 8, 8)
         self.verticalLayout_2 = QVBoxLayout()
         self.verticalLayout_2.setSpacing(15)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout_2.setContentsMargins(-1, 0, 0, -1)
-        self.videoSwitcher = QTabWidget(Form)
+        self.videoSwitcher = QGroupBox(Form)
         self.videoSwitcher.setObjectName(u"videoSwitcher")
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.videoSwitcher.sizePolicy().hasHeightForWidth())
         self.videoSwitcher.setSizePolicy(sizePolicy)
-        self.videoPlaybackPage = QWidget()
-        self.videoPlaybackPage.setObjectName(u"videoPlaybackPage")
-        sizePolicy.setHeightForWidth(self.videoPlaybackPage.sizePolicy().hasHeightForWidth())
-        self.videoPlaybackPage.setSizePolicy(sizePolicy)
-        self.verticalLayout_3 = QVBoxLayout(self.videoPlaybackPage)
-        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.videoFrame = QVideoWidget(self.videoPlaybackPage)
-        self.videoFrame.setObjectName(u"videoFrame")
-        sizePolicy.setHeightForWidth(self.videoFrame.sizePolicy().hasHeightForWidth())
-        self.videoFrame.setSizePolicy(sizePolicy)
-        self.videoFrame.setMinimumSize(QSize(800, 450))
-        self.videoFrame.setStyleSheet(u"background-color: rgb(0, 0, 0);")
-
-        self.verticalLayout_3.addWidget(self.videoFrame)
-
-        self.horizontalLayout_3 = QHBoxLayout()
-        self.horizontalLayout_3.setSpacing(10)
-        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.horizontalLayout_3.setContentsMargins(10, -1, 10, 0)
-        self.playBtn = QPushButton(self.videoPlaybackPage)
-        self.playBtn.setObjectName(u"playBtn")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.playBtn.sizePolicy().hasHeightForWidth())
-        self.playBtn.setSizePolicy(sizePolicy1)
-
-        self.horizontalLayout_3.addWidget(self.playBtn)
-
-        self.videoSlider = QSlider(self.videoPlaybackPage)
-        self.videoSlider.setObjectName(u"videoSlider")
-        self.videoSlider.setOrientation(Qt.Horizontal)
-
-        self.horizontalLayout_3.addWidget(self.videoSlider)
-
-        self.videoTime = QLabel(self.videoPlaybackPage)
-        self.videoTime.setObjectName(u"videoTime")
-
-        self.horizontalLayout_3.addWidget(self.videoTime)
-
-        self.label_8 = QLabel(self.videoPlaybackPage)
-        self.label_8.setObjectName(u"label_8")
-
-        self.horizontalLayout_3.addWidget(self.label_8)
-
-        self.videoMaxTime = QLabel(self.videoPlaybackPage)
-        self.videoMaxTime.setObjectName(u"videoMaxTime")
-
-        self.horizontalLayout_3.addWidget(self.videoMaxTime)
-
-
-        self.verticalLayout_3.addLayout(self.horizontalLayout_3)
-
-        self.videoSwitcher.addTab(self.videoPlaybackPage, "")
-        self.analysisPage = QWidget()
-        self.analysisPage.setObjectName(u"analysisPage")
-        sizePolicy.setHeightForWidth(self.analysisPage.sizePolicy().hasHeightForWidth())
-        self.analysisPage.setSizePolicy(sizePolicy)
-        self.verticalLayout_4 = QVBoxLayout(self.analysisPage)
+        self.verticalLayout_4 = QVBoxLayout(self.videoSwitcher)
+        self.verticalLayout_4.setSpacing(4)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.frameView = ImageView(self.analysisPage)
+        self.verticalLayout_4.setContentsMargins(0, 0, 0, 5)
+        self.frameView = ImageView(self.videoSwitcher)
         self.frameView.setObjectName(u"frameView")
         sizePolicy.setHeightForWidth(self.frameView.sizePolicy().hasHeightForWidth())
         self.frameView.setSizePolicy(sizePolicy)
@@ -109,32 +53,35 @@ class Ui_Form(object):
         self.horizontalLayout_5.setSpacing(10)
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
         self.horizontalLayout_5.setContentsMargins(10, -1, 10, 0)
-        self.stopProcessBtn = QPushButton(self.analysisPage)
+        self.stopProcessBtn = QPushButton(self.videoSwitcher)
         self.stopProcessBtn.setObjectName(u"stopProcessBtn")
         self.stopProcessBtn.setEnabled(False)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.stopProcessBtn.sizePolicy().hasHeightForWidth())
         self.stopProcessBtn.setSizePolicy(sizePolicy1)
 
         self.horizontalLayout_5.addWidget(self.stopProcessBtn)
 
-        self.frameSlider = QSlider(self.analysisPage)
+        self.frameSlider = QSlider(self.videoSwitcher)
         self.frameSlider.setObjectName(u"frameSlider")
         self.frameSlider.setEnabled(True)
         self.frameSlider.setOrientation(Qt.Horizontal)
 
         self.horizontalLayout_5.addWidget(self.frameSlider)
 
-        self.frameNum = QLabel(self.analysisPage)
+        self.frameNum = QLabel(self.videoSwitcher)
         self.frameNum.setObjectName(u"frameNum")
 
         self.horizontalLayout_5.addWidget(self.frameNum)
 
-        self.label_13 = QLabel(self.analysisPage)
+        self.label_13 = QLabel(self.videoSwitcher)
         self.label_13.setObjectName(u"label_13")
 
         self.horizontalLayout_5.addWidget(self.label_13)
 
-        self.maxFrameNum = QLabel(self.analysisPage)
+        self.maxFrameNum = QLabel(self.videoSwitcher)
         self.maxFrameNum.setObjectName(u"maxFrameNum")
 
         self.horizontalLayout_5.addWidget(self.maxFrameNum)
@@ -142,56 +89,143 @@ class Ui_Form(object):
 
         self.verticalLayout_4.addLayout(self.horizontalLayout_5)
 
-        self.videoSwitcher.addTab(self.analysisPage, "")
 
         self.verticalLayout_2.addWidget(self.videoSwitcher)
 
         self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setSpacing(7)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout_2.setContentsMargins(2, 2, 2, 2)
+        self.verticalLayout_9 = QVBoxLayout()
+        self.verticalLayout_9.setSpacing(2)
+        self.verticalLayout_9.setObjectName(u"verticalLayout_9")
+        self.verticalLayout_9.setContentsMargins(-1, 0, 0, 0)
         self.mediaGBox = QGroupBox(Form)
         self.mediaGBox.setObjectName(u"mediaGBox")
         self.gridLayout_2 = QGridLayout(self.mediaGBox)
+        self.gridLayout_2.setSpacing(5)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.loadVideoBtn = QToolButton(self.mediaGBox)
-        self.loadVideoBtn.setObjectName(u"loadVideoBtn")
-
-        self.gridLayout_2.addWidget(self.loadVideoBtn, 1, 1, 1, 1)
-
-        self.loadCacheBtn = QToolButton(self.mediaGBox)
-        self.loadCacheBtn.setObjectName(u"loadCacheBtn")
-
-        self.gridLayout_2.addWidget(self.loadCacheBtn, 3, 1, 1, 1)
-
-        self.inputVideoFileLabel = QLineEdit(self.mediaGBox)
-        self.inputVideoFileLabel.setObjectName(u"inputVideoFileLabel")
-
-        self.gridLayout_2.addWidget(self.inputVideoFileLabel, 0, 1, 1, 1)
-
         self.label_9 = QLabel(self.mediaGBox)
         self.label_9.setObjectName(u"label_9")
 
         self.gridLayout_2.addWidget(self.label_9, 0, 0, 1, 1)
-
-        self.cacheDataLabel = QLineEdit(self.mediaGBox)
-        self.cacheDataLabel.setObjectName(u"cacheDataLabel")
-
-        self.gridLayout_2.addWidget(self.cacheDataLabel, 2, 1, 1, 1)
 
         self.label_10 = QLabel(self.mediaGBox)
         self.label_10.setObjectName(u"label_10")
 
         self.gridLayout_2.addWidget(self.label_10, 2, 0, 1, 1)
 
+        self.horizontalLayout_9 = QHBoxLayout()
+        self.horizontalLayout_9.setSpacing(0)
+        self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
+        self.horizontalLayout_9.setSizeConstraint(QLayout.SetDefaultConstraint)
+        self.horizontalLayout_9.setContentsMargins(-1, -1, 0, -1)
+        self.inputVideoFileLabel = QLineEdit(self.mediaGBox)
+        self.inputVideoFileLabel.setObjectName(u"inputVideoFileLabel")
 
-        self.horizontalLayout_2.addWidget(self.mediaGBox)
+        self.horizontalLayout_9.addWidget(self.inputVideoFileLabel)
+
+        self.loadVideoBtn = QToolButton(self.mediaGBox)
+        self.loadVideoBtn.setObjectName(u"loadVideoBtn")
+
+        self.horizontalLayout_9.addWidget(self.loadVideoBtn)
+
+
+        self.gridLayout_2.addLayout(self.horizontalLayout_9, 0, 1, 1, 1)
+
+        self.horizontalLayout_10 = QHBoxLayout()
+        self.horizontalLayout_10.setSpacing(0)
+        self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
+        self.cacheDataLabel = QLineEdit(self.mediaGBox)
+        self.cacheDataLabel.setObjectName(u"cacheDataLabel")
+
+        self.horizontalLayout_10.addWidget(self.cacheDataLabel)
+
+        self.loadCacheBtn = QToolButton(self.mediaGBox)
+        self.loadCacheBtn.setObjectName(u"loadCacheBtn")
+
+        self.horizontalLayout_10.addWidget(self.loadCacheBtn)
+
+
+        self.gridLayout_2.addLayout(self.horizontalLayout_10, 2, 1, 1, 1)
+
+
+        self.verticalLayout_9.addWidget(self.mediaGBox)
+
+        self.groupBox = QGroupBox(Form)
+        self.groupBox.setObjectName(u"groupBox")
+        self.gridLayout_5 = QGridLayout(self.groupBox)
+        self.gridLayout_5.setSpacing(5)
+        self.gridLayout_5.setObjectName(u"gridLayout_5")
+        self.gridLayout_5.setContentsMargins(5, 5, 5, 5)
+        self.saveMaskBtn = QPushButton(self.groupBox)
+        self.saveMaskBtn.setObjectName(u"saveMaskBtn")
+
+        self.gridLayout_5.addWidget(self.saveMaskBtn, 3, 2, 1, 1)
+
+        self.resetMaskBtn = QPushButton(self.groupBox)
+        self.resetMaskBtn.setObjectName(u"resetMaskBtn")
+
+        self.gridLayout_5.addWidget(self.resetMaskBtn, 3, 0, 1, 1)
+
+        self.drawMaskBtn = QPushButton(self.groupBox)
+        self.drawMaskBtn.setObjectName(u"drawMaskBtn")
+
+        self.gridLayout_5.addWidget(self.drawMaskBtn, 3, 1, 1, 1)
+
+        self.label_19 = QLabel(self.groupBox)
+        self.label_19.setObjectName(u"label_19")
+
+        self.gridLayout_5.addWidget(self.label_19, 2, 0, 1, 1)
+
+        self.label_17 = QLabel(self.groupBox)
+        self.label_17.setObjectName(u"label_17")
+
+        self.gridLayout_5.addWidget(self.label_17, 1, 0, 1, 1)
+
+        self.maskStokeSpn = QSpinBox(self.groupBox)
+        self.maskStokeSpn.setObjectName(u"maskStokeSpn")
+        self.maskStokeSpn.setMaximum(200)
+        self.maskStokeSpn.setValue(50)
+
+        self.gridLayout_5.addWidget(self.maskStokeSpn, 1, 1, 1, 2)
+
+        self.horizontalLayout_8 = QHBoxLayout()
+        self.horizontalLayout_8.setSpacing(1)
+        self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
+        self.maskFileLbl = QLineEdit(self.groupBox)
+        self.maskFileLbl.setObjectName(u"maskFileLbl")
+        self.maskFileLbl.setReadOnly(True)
+
+        self.horizontalLayout_8.addWidget(self.maskFileLbl)
+
+        self.setMaskFileBtn = QToolButton(self.groupBox)
+        self.setMaskFileBtn.setObjectName(u"setMaskFileBtn")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.setMaskFileBtn.sizePolicy().hasHeightForWidth())
+        self.setMaskFileBtn.setSizePolicy(sizePolicy2)
+
+        self.horizontalLayout_8.addWidget(self.setMaskFileBtn)
+
+
+        self.gridLayout_5.addLayout(self.horizontalLayout_8, 2, 1, 1, 2)
+
+
+        self.verticalLayout_9.addWidget(self.groupBox)
+
+
+        self.horizontalLayout_2.addLayout(self.verticalLayout_9)
 
         self.inferenceGBox = QGroupBox(Form)
         self.inferenceGBox.setObjectName(u"inferenceGBox")
         self.inferenceGBox.setEnabled(True)
         self.formLayout = QFormLayout(self.inferenceGBox)
         self.formLayout.setObjectName(u"formLayout")
-        self.formLayout.setHorizontalSpacing(20)
+        self.formLayout.setHorizontalSpacing(5)
+        self.formLayout.setVerticalSpacing(5)
+        self.formLayout.setContentsMargins(8, 8, 8, 8)
         self.modelLabel = QLabel(self.inferenceGBox)
         self.modelLabel.setObjectName(u"modelLabel")
 
@@ -203,10 +237,29 @@ class Ui_Form(object):
 
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.modelComboBox)
 
+        self.iOUThresholdLabel_2 = QLabel(self.inferenceGBox)
+        self.iOUThresholdLabel_2.setObjectName(u"iOUThresholdLabel_2")
+
+        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.iOUThresholdLabel_2)
+
+        self.cosineDistSpn = QDoubleSpinBox(self.inferenceGBox)
+        self.cosineDistSpn.setObjectName(u"cosineDistSpn")
+        self.cosineDistSpn.setDecimals(1)
+        self.cosineDistSpn.setValue(0.400000000000000)
+
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.cosineDistSpn)
+
         self.iOUThresholdLabel = QLabel(self.inferenceGBox)
         self.iOUThresholdLabel.setObjectName(u"iOUThresholdLabel")
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.iOUThresholdLabel)
+
+        self.iouThreshSpn = QDoubleSpinBox(self.inferenceGBox)
+        self.iouThreshSpn.setObjectName(u"iouThreshSpn")
+        self.iouThreshSpn.setDecimals(2)
+        self.iouThreshSpn.setValue(0.450000000000000)
+
+        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.iouThreshSpn)
 
         self.confidenceThresholdLabel = QLabel(self.inferenceGBox)
         self.confidenceThresholdLabel.setObjectName(u"confidenceThresholdLabel")
@@ -236,9 +289,6 @@ class Ui_Form(object):
 
         self.setOutputFileBtn = QToolButton(self.inferenceGBox)
         self.setOutputFileBtn.setObjectName(u"setOutputFileBtn")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
         sizePolicy2.setHeightForWidth(self.setOutputFileBtn.sizePolicy().hasHeightForWidth())
         self.setOutputFileBtn.setSizePolicy(sizePolicy2)
 
@@ -247,172 +297,177 @@ class Ui_Form(object):
 
         self.formLayout.setLayout(5, QFormLayout.FieldRole, self.horizontalLayout_4)
 
-        self.iouThreshSpn = QDoubleSpinBox(self.inferenceGBox)
-        self.iouThreshSpn.setObjectName(u"iouThreshSpn")
-        self.iouThreshSpn.setDecimals(2)
-        self.iouThreshSpn.setValue(0.450000000000000)
-
-        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.iouThreshSpn)
-
         self.startInferenceBtn = QPushButton(self.inferenceGBox)
         self.startInferenceBtn.setObjectName(u"startInferenceBtn")
 
         self.formLayout.setWidget(6, QFormLayout.FieldRole, self.startInferenceBtn)
 
-        self.iOUThresholdLabel_2 = QLabel(self.inferenceGBox)
-        self.iOUThresholdLabel_2.setObjectName(u"iOUThresholdLabel_2")
-
-        self.formLayout.setWidget(1, QFormLayout.LabelRole, self.iOUThresholdLabel_2)
-
-        self.cosineDistSpn = QDoubleSpinBox(self.inferenceGBox)
-        self.cosineDistSpn.setObjectName(u"cosineDistSpn")
-        self.cosineDistSpn.setDecimals(1)
-        self.cosineDistSpn.setValue(0.400000000000000)
-
-        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.cosineDistSpn)
-
-        self.maskStokeSpn = QSpinBox(self.inferenceGBox)
-        self.maskStokeSpn.setObjectName(u"maskStokeSpn")
-        self.maskStokeSpn.setMaximum(200)
-        self.maskStokeSpn.setValue(50)
-
-        self.formLayout.setWidget(9, QFormLayout.FieldRole, self.maskStokeSpn)
-
-        self.label_17 = QLabel(self.inferenceGBox)
-        self.label_17.setObjectName(u"label_17")
-
-        self.formLayout.setWidget(9, QFormLayout.LabelRole, self.label_17)
-
-        self.resetMaskBtn = QPushButton(self.inferenceGBox)
-        self.resetMaskBtn.setObjectName(u"resetMaskBtn")
-
-        self.formLayout.setWidget(8, QFormLayout.FieldRole, self.resetMaskBtn)
-
-        self.drawMaskBtn = QPushButton(self.inferenceGBox)
-        self.drawMaskBtn.setObjectName(u"drawMaskBtn")
-
-        self.formLayout.setWidget(8, QFormLayout.LabelRole, self.drawMaskBtn)
-
 
         self.horizontalLayout_2.addWidget(self.inferenceGBox)
 
-        self.countingGBox = QGroupBox(Form)
-        self.countingGBox.setObjectName(u"countingGBox")
-        self.gridLayout_4 = QGridLayout(self.countingGBox)
-        self.gridLayout_4.setSpacing(2)
-        self.gridLayout_4.setObjectName(u"gridLayout_4")
-        self.gridLayout_4.setContentsMargins(5, 5, 5, 5)
-        self.skipFrameFilterSpn = QSpinBox(self.countingGBox)
-        self.skipFrameFilterSpn.setObjectName(u"skipFrameFilterSpn")
-        self.skipFrameFilterSpn.setValue(10)
+        self.CountingGBox = QGroupBox(Form)
+        self.CountingGBox.setObjectName(u"CountingGBox")
+        self.verticalLayout_8 = QVBoxLayout(self.CountingGBox)
+        self.verticalLayout_8.setSpacing(2)
+        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
+        self.verticalLayout_8.setContentsMargins(8, 8, 8, 8)
+        self.horizontalLayout_7 = QHBoxLayout()
+        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
+        self.label_16 = QLabel(self.CountingGBox)
+        self.label_16.setObjectName(u"label_16")
 
-        self.gridLayout_4.addWidget(self.skipFrameFilterSpn, 4, 2, 1, 1)
+        self.horizontalLayout_7.addWidget(self.label_16)
 
-        self.countMethodCmb = QComboBox(self.countingGBox)
+        self.countMethodCmb = QComboBox(self.CountingGBox)
         self.countMethodCmb.addItem("")
         self.countMethodCmb.addItem("")
         self.countMethodCmb.setObjectName(u"countMethodCmb")
 
-        self.gridLayout_4.addWidget(self.countMethodCmb, 0, 1, 1, 4)
-
-        self.label_6 = QLabel(self.countingGBox)
-        self.label_6.setObjectName(u"label_6")
-
-        self.gridLayout_4.addWidget(self.label_6, 4, 0, 1, 1)
-
-        self.horizontalLayout_6 = QHBoxLayout()
-        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
-        self.countBtn = QPushButton(self.countingGBox)
-        self.countBtn.setObjectName(u"countBtn")
-
-        self.horizontalLayout_6.addWidget(self.countBtn)
-
-        self.countAnalyzeBtn = QPushButton(self.countingGBox)
-        self.countAnalyzeBtn.setObjectName(u"countAnalyzeBtn")
-
-        self.horizontalLayout_6.addWidget(self.countAnalyzeBtn)
+        self.horizontalLayout_7.addWidget(self.countMethodCmb)
 
 
-        self.gridLayout_4.addLayout(self.horizontalLayout_6, 7, 0, 1, 5)
+        self.verticalLayout_8.addLayout(self.horizontalLayout_7)
 
-        self.label_11 = QLabel(self.countingGBox)
-        self.label_11.setObjectName(u"label_11")
-
-        self.gridLayout_4.addWidget(self.label_11, 1, 1, 1, 1)
-
-        self.distFilterSpn = QSpinBox(self.countingGBox)
-        self.distFilterSpn.setObjectName(u"distFilterSpn")
-        self.distFilterSpn.setMaximum(1000)
-        self.distFilterSpn.setValue(440)
-
-        self.gridLayout_4.addWidget(self.distFilterSpn, 3, 2, 1, 1)
-
-        self.label_14 = QLabel(self.countingGBox)
-        self.label_14.setObjectName(u"label_14")
-
-        self.gridLayout_4.addWidget(self.label_14, 2, 0, 1, 1)
-
-        self.yFilterVectorSpn = QDoubleSpinBox(self.countingGBox)
-        self.yFilterVectorSpn.setObjectName(u"yFilterVectorSpn")
-        self.yFilterVectorSpn.setDecimals(0)
-        self.yFilterVectorSpn.setMinimum(-1000.000000000000000)
-        self.yFilterVectorSpn.setMaximum(1000.000000000000000)
-        self.yFilterVectorSpn.setValue(357.000000000000000)
-
-        self.gridLayout_4.addWidget(self.yFilterVectorSpn, 1, 4, 1, 1)
-
-        self.label_16 = QLabel(self.countingGBox)
-        self.label_16.setObjectName(u"label_16")
-
-        self.gridLayout_4.addWidget(self.label_16, 0, 0, 1, 1)
-
-        self.widthFilterVectorSpn = QSpinBox(self.countingGBox)
+        self.countingMethodSwitcher = QStackedWidget(self.CountingGBox)
+        self.countingMethodSwitcher.setObjectName(u"countingMethodSwitcher")
+        self.vectorPage = QWidget()
+        self.vectorPage.setObjectName(u"vectorPage")
+        self.gridLayout_3 = QGridLayout(self.vectorPage)
+        self.gridLayout_3.setSpacing(5)
+        self.gridLayout_3.setObjectName(u"gridLayout_3")
+        self.gridLayout_3.setContentsMargins(5, 5, 5, 5)
+        self.widthFilterVectorSpn = QSpinBox(self.vectorPage)
         self.widthFilterVectorSpn.setObjectName(u"widthFilterVectorSpn")
         self.widthFilterVectorSpn.setMaximum(1000)
         self.widthFilterVectorSpn.setValue(192)
 
-        self.gridLayout_4.addWidget(self.widthFilterVectorSpn, 2, 2, 1, 1)
+        self.gridLayout_3.addWidget(self.widthFilterVectorSpn, 2, 2, 1, 1)
 
-        self.label_5 = QLabel(self.countingGBox)
-        self.label_5.setObjectName(u"label_5")
-
-        self.gridLayout_4.addWidget(self.label_5, 3, 0, 1, 1)
-
-        self.label_4 = QLabel(self.countingGBox)
-        self.label_4.setObjectName(u"label_4")
-
-        self.gridLayout_4.addWidget(self.label_4, 1, 0, 1, 1)
-
-        self.finishLineChk = QCheckBox(self.countingGBox)
-        self.finishLineChk.setObjectName(u"finishLineChk")
-
-        self.gridLayout_4.addWidget(self.finishLineChk, 6, 0, 1, 5)
-
-        self.xFilterVectorSpn = QDoubleSpinBox(self.countingGBox)
+        self.xFilterVectorSpn = QDoubleSpinBox(self.vectorPage)
         self.xFilterVectorSpn.setObjectName(u"xFilterVectorSpn")
         self.xFilterVectorSpn.setDecimals(0)
         self.xFilterVectorSpn.setMinimum(-1000.000000000000000)
         self.xFilterVectorSpn.setMaximum(1000.000000000000000)
         self.xFilterVectorSpn.setValue(-258.000000000000000)
 
-        self.gridLayout_4.addWidget(self.xFilterVectorSpn, 1, 2, 1, 1)
+        self.gridLayout_3.addWidget(self.xFilterVectorSpn, 0, 2, 1, 1)
 
-        self.label_12 = QLabel(self.countingGBox)
+        self.label_12 = QLabel(self.vectorPage)
         self.label_12.setObjectName(u"label_12")
 
-        self.gridLayout_4.addWidget(self.label_12, 1, 3, 1, 1)
+        self.gridLayout_3.addWidget(self.label_12, 1, 1, 1, 1)
 
-        self.visualizeChk = QCheckBox(self.countingGBox)
+        self.label_5 = QLabel(self.vectorPage)
+        self.label_5.setObjectName(u"label_5")
+
+        self.gridLayout_3.addWidget(self.label_5, 3, 0, 1, 1)
+
+        self.label_14 = QLabel(self.vectorPage)
+        self.label_14.setObjectName(u"label_14")
+
+        self.gridLayout_3.addWidget(self.label_14, 2, 0, 1, 1)
+
+        self.label_11 = QLabel(self.vectorPage)
+        self.label_11.setObjectName(u"label_11")
+
+        self.gridLayout_3.addWidget(self.label_11, 0, 1, 1, 1)
+
+        self.label_6 = QLabel(self.vectorPage)
+        self.label_6.setObjectName(u"label_6")
+
+        self.gridLayout_3.addWidget(self.label_6, 4, 0, 1, 1)
+
+        self.distFilterSpn = QSpinBox(self.vectorPage)
+        self.distFilterSpn.setObjectName(u"distFilterSpn")
+        self.distFilterSpn.setMaximum(1000)
+        self.distFilterSpn.setValue(440)
+
+        self.gridLayout_3.addWidget(self.distFilterSpn, 3, 2, 1, 1)
+
+        self.skipFrameFilterSpn = QSpinBox(self.vectorPage)
+        self.skipFrameFilterSpn.setObjectName(u"skipFrameFilterSpn")
+        self.skipFrameFilterSpn.setValue(10)
+
+        self.gridLayout_3.addWidget(self.skipFrameFilterSpn, 4, 2, 1, 1)
+
+        self.label_4 = QLabel(self.vectorPage)
+        self.label_4.setObjectName(u"label_4")
+
+        self.gridLayout_3.addWidget(self.label_4, 0, 0, 1, 1)
+
+        self.visualizeChk = QCheckBox(self.vectorPage)
         self.visualizeChk.setObjectName(u"visualizeChk")
 
-        self.gridLayout_4.addWidget(self.visualizeChk, 5, 0, 1, 5)
+        self.gridLayout_3.addWidget(self.visualizeChk, 5, 0, 1, 1)
+
+        self.yFilterVectorSpn = QDoubleSpinBox(self.vectorPage)
+        self.yFilterVectorSpn.setObjectName(u"yFilterVectorSpn")
+        self.yFilterVectorSpn.setEnabled(False)
+        self.yFilterVectorSpn.setDecimals(0)
+        self.yFilterVectorSpn.setMinimum(-1000.000000000000000)
+        self.yFilterVectorSpn.setMaximum(1000.000000000000000)
+        self.yFilterVectorSpn.setValue(357.000000000000000)
+
+        self.gridLayout_3.addWidget(self.yFilterVectorSpn, 1, 2, 1, 1)
+
+        self.vectorDirectionLbl = QLabel(self.vectorPage)
+        self.vectorDirectionLbl.setObjectName(u"vectorDirectionLbl")
+        self.vectorDirectionLbl.setStyleSheet(u"color: rgb(252, 1, 7);")
+
+        self.gridLayout_3.addWidget(self.vectorDirectionLbl, 1, 0, 1, 1, Qt.AlignHCenter)
+
+        self.countingMethodSwitcher.addWidget(self.vectorPage)
+        self.finishLinePage = QWidget()
+        self.finishLinePage.setObjectName(u"finishLinePage")
+        self.gridLayout_4 = QGridLayout(self.finishLinePage)
+        self.gridLayout_4.setObjectName(u"gridLayout_4")
+        self.finishLineFramesSpn = QSpinBox(self.finishLinePage)
+        self.finishLineFramesSpn.setObjectName(u"finishLineFramesSpn")
+        self.finishLineFramesSpn.setMaximum(200)
+        self.finishLineFramesSpn.setValue(5)
+
+        self.gridLayout_4.addWidget(self.finishLineFramesSpn, 0, 1, 1, 1)
+
+        self.finishLineChk = QCheckBox(self.finishLinePage)
+        self.finishLineChk.setObjectName(u"finishLineChk")
+
+        self.gridLayout_4.addWidget(self.finishLineChk, 1, 0, 1, 1)
+
+        self.label_18 = QLabel(self.finishLinePage)
+        self.label_18.setObjectName(u"label_18")
+
+        self.gridLayout_4.addWidget(self.label_18, 0, 0, 1, 1)
+
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.gridLayout_4.addItem(self.verticalSpacer, 2, 0, 1, 1)
+
+        self.countingMethodSwitcher.addWidget(self.finishLinePage)
+
+        self.verticalLayout_8.addWidget(self.countingMethodSwitcher)
+
+        self.horizontalLayout_6 = QHBoxLayout()
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.countAnalyzeBtn = QPushButton(self.CountingGBox)
+        self.countAnalyzeBtn.setObjectName(u"countAnalyzeBtn")
+
+        self.horizontalLayout_6.addWidget(self.countAnalyzeBtn)
+
+        self.countBtn = QPushButton(self.CountingGBox)
+        self.countBtn.setObjectName(u"countBtn")
+
+        self.horizontalLayout_6.addWidget(self.countBtn)
 
 
-        self.horizontalLayout_2.addWidget(self.countingGBox)
+        self.verticalLayout_8.addLayout(self.horizontalLayout_6)
+
+
+        self.horizontalLayout_2.addWidget(self.CountingGBox)
 
 
         self.verticalLayout_2.addLayout(self.horizontalLayout_2)
 
+        self.verticalLayout_2.setStretch(0, 1)
 
         self.horizontalLayout.addLayout(self.verticalLayout_2)
 
@@ -573,11 +628,12 @@ class Ui_Form(object):
 
         self.retranslateUi(Form)
         self.visualizeChk.toggled.connect(self.xFilterVectorSpn.setEnabled)
-        self.visualizeChk.toggled.connect(self.yFilterVectorSpn.setEnabled)
         self.visualizeChk.toggled.connect(self.widthFilterVectorSpn.setEnabled)
         self.visualizeChk.toggled.connect(self.distFilterSpn.setEnabled)
+        self.visualizeChk.toggled.connect(self.yFilterVectorSpn.setEnabled)
 
-        self.videoSwitcher.setCurrentIndex(1)
+        self.countMethodCmb.setCurrentIndex(1)
+        self.countingMethodSwitcher.setCurrentIndex(1)
         self.previewTabWidget.setCurrentIndex(0)
 
 
@@ -586,49 +642,51 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
-        self.playBtn.setText(QCoreApplication.translate("Form", u"Play / Pause", None))
-        self.videoTime.setText(QCoreApplication.translate("Form", u"00:00", None))
-        self.label_8.setText(QCoreApplication.translate("Form", u"/", None))
-        self.videoMaxTime.setText(QCoreApplication.translate("Form", u"00:00", None))
-        self.videoSwitcher.setTabText(self.videoSwitcher.indexOf(self.videoPlaybackPage), QCoreApplication.translate("Form", u"Playback", None))
+        self.videoSwitcher.setTitle(QCoreApplication.translate("Form", u"Video", None))
         self.stopProcessBtn.setText(QCoreApplication.translate("Form", u"STOP", None))
         self.frameNum.setText(QCoreApplication.translate("Form", u"0", None))
         self.label_13.setText(QCoreApplication.translate("Form", u"/", None))
         self.maxFrameNum.setText(QCoreApplication.translate("Form", u"N", None))
-        self.videoSwitcher.setTabText(self.videoSwitcher.indexOf(self.analysisPage), QCoreApplication.translate("Form", u"Analysis", None))
         self.mediaGBox.setTitle(QCoreApplication.translate("Form", u"Media", None))
-        self.loadVideoBtn.setText(QCoreApplication.translate("Form", u"...", None))
-        self.loadCacheBtn.setText(QCoreApplication.translate("Form", u"...", None))
         self.label_9.setText(QCoreApplication.translate("Form", u"Input Video:", None))
         self.label_10.setText(QCoreApplication.translate("Form", u"Cache Data:", None))
+        self.loadVideoBtn.setText(QCoreApplication.translate("Form", u"...", None))
+        self.loadCacheBtn.setText(QCoreApplication.translate("Form", u"...", None))
+        self.groupBox.setTitle(QCoreApplication.translate("Form", u"Masking", None))
+        self.saveMaskBtn.setText(QCoreApplication.translate("Form", u"Save", None))
+        self.resetMaskBtn.setText(QCoreApplication.translate("Form", u"Reset", None))
+        self.drawMaskBtn.setText(QCoreApplication.translate("Form", u"Draw", None))
+        self.label_19.setText(QCoreApplication.translate("Form", u"Mask File:", None))
+        self.label_17.setText(QCoreApplication.translate("Form", u"Stroke Size:", None))
+        self.setMaskFileBtn.setText(QCoreApplication.translate("Form", u"...", None))
         self.inferenceGBox.setTitle(QCoreApplication.translate("Form", u"Inference", None))
         self.modelLabel.setText(QCoreApplication.translate("Form", u"Model: ", None))
         self.modelComboBox.setItemText(0, QCoreApplication.translate("Form", u"YoloV4", None))
 
+        self.iOUThresholdLabel_2.setText(QCoreApplication.translate("Form", u"Cosine Distance:", None))
         self.iOUThresholdLabel.setText(QCoreApplication.translate("Form", u"IOU Threshold:", None))
         self.confidenceThresholdLabel.setText(QCoreApplication.translate("Form", u"Score Threshold", None))
         self.label_7.setText(QCoreApplication.translate("Form", u"Output File:", None))
         self.setOutputFileBtn.setText(QCoreApplication.translate("Form", u"...", None))
         self.startInferenceBtn.setText(QCoreApplication.translate("Form", u"START", None))
-        self.iOUThresholdLabel_2.setText(QCoreApplication.translate("Form", u"Cosine Distance:", None))
-        self.label_17.setText(QCoreApplication.translate("Form", u"Mask Stroke Thickness:", None))
-        self.resetMaskBtn.setText(QCoreApplication.translate("Form", u"Reset Mask", None))
-        self.drawMaskBtn.setText(QCoreApplication.translate("Form", u"Draw Mask", None))
-        self.countingGBox.setTitle(QCoreApplication.translate("Form", u"Counting", None))
+        self.CountingGBox.setTitle(QCoreApplication.translate("Form", u"Counting", None))
+        self.label_16.setText(QCoreApplication.translate("Form", u"Method:", None))
         self.countMethodCmb.setItemText(0, QCoreApplication.translate("Form", u"Vector", None))
         self.countMethodCmb.setItemText(1, QCoreApplication.translate("Form", u"Finish Line", None))
 
-        self.label_6.setText(QCoreApplication.translate("Form", u"Max Skipped Frames", None))
-        self.countBtn.setText(QCoreApplication.translate("Form", u"Quick Count", None))
-        self.countAnalyzeBtn.setText(QCoreApplication.translate("Form", u"Count + Analyze", None))
-        self.label_11.setText(QCoreApplication.translate("Form", u"X:", None))
-        self.label_14.setText(QCoreApplication.translate("Form", u"Filter Vector Width", None))
-        self.label_16.setText(QCoreApplication.translate("Form", u"Method:", None))
-        self.label_5.setText(QCoreApplication.translate("Form", u"Travel Distance (pixels)", None))
-        self.label_4.setText(QCoreApplication.translate("Form", u"Filter Vector (pixels)", None))
-        self.finishLineChk.setText(QCoreApplication.translate("Form", u"Show Finish Line", None))
+        self.countMethodCmb.setCurrentText(QCoreApplication.translate("Form", u"Finish Line", None))
         self.label_12.setText(QCoreApplication.translate("Form", u"Y:", None))
+        self.label_5.setText(QCoreApplication.translate("Form", u"Travel Distance (pixels)", None))
+        self.label_14.setText(QCoreApplication.translate("Form", u"Filter Vector Width", None))
+        self.label_11.setText(QCoreApplication.translate("Form", u"X:", None))
+        self.label_6.setText(QCoreApplication.translate("Form", u"Max Skipped Frames", None))
+        self.label_4.setText(QCoreApplication.translate("Form", u"Filter Vector (pixels)", None))
         self.visualizeChk.setText(QCoreApplication.translate("Form", u"Show Vector", None))
+        self.vectorDirectionLbl.setText(QCoreApplication.translate("Form", u"DOWN", None))
+        self.finishLineChk.setText(QCoreApplication.translate("Form", u"Show Finish Line", None))
+        self.label_18.setText(QCoreApplication.translate("Form", u"frames to count:", None))
+        self.countAnalyzeBtn.setText(QCoreApplication.translate("Form", u"Count + Analyze", None))
+        self.countBtn.setText(QCoreApplication.translate("Form", u"Quick Count", None))
         self.label.setText(QCoreApplication.translate("Form", u"Trucks", None))
         self.label_2.setText(QCoreApplication.translate("Form", u"Cars", None))
         self.label_15.setText(QCoreApplication.translate("Form", u"Bus", None))

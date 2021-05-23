@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1158</width>
-    <height>788</height>
+    <width>1033</width>
+    <height>820</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,20 @@
    <property name="spacing">
     <number>5</number>
    </property>
+   <property name="leftMargin">
+    <number>8</number>
+   </property>
+   <property name="topMargin">
+    <number>8</number>
+   </property>
+   <property name="rightMargin">
+    <number>8</number>
+   </property>
+   <property name="bottomMargin">
+    <number>8</number>
+   </property>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
+    <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,0">
      <property name="spacing">
       <number>15</number>
      </property>
@@ -29,195 +41,113 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QTabWidget" name="videoSwitcher">
+      <widget class="QGroupBox" name="videoSwitcher">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="currentIndex">
-        <number>1</number>
+       <property name="title">
+        <string>Video</string>
        </property>
-       <widget class="QWidget" name="videoPlaybackPage">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <property name="spacing">
+         <number>4</number>
         </property>
-        <attribute name="title">
-         <string>Playback</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_3">
-         <item>
-          <widget class="QVideoWidget" name="videoFrame" native="true">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>800</width>
-             <height>450</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgb(0, 0, 0);</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
-           <property name="spacing">
-            <number>10</number>
-           </property>
-           <property name="leftMargin">
-            <number>10</number>
-           </property>
-           <property name="rightMargin">
-            <number>10</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QPushButton" name="playBtn">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>Play / Pause</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QSlider" name="videoSlider">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="videoTime">
-             <property name="text">
-              <string>00:00</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_8">
-             <property name="text">
-              <string>/</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="videoMaxTime">
-             <property name="text">
-              <string>00:00</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="analysisPage">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+        <property name="leftMargin">
+         <number>0</number>
         </property>
-        <attribute name="title">
-         <string>Analysis</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_4">
-         <item>
-          <widget class="ImageView" name="frameView" native="true">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_5">
-           <property name="spacing">
-            <number>10</number>
-           </property>
-           <property name="leftMargin">
-            <number>10</number>
-           </property>
-           <property name="rightMargin">
-            <number>10</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QPushButton" name="stopProcessBtn">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>STOP</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QSlider" name="frameSlider">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="frameNum">
-             <property name="text">
-              <string>0</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_13">
-             <property name="text">
-              <string>/</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="maxFrameNum">
-             <property name="text">
-              <string>N</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </widget>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>5</number>
+        </property>
+        <item>
+         <widget class="ImageView" name="frameView" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <property name="spacing">
+           <number>10</number>
+          </property>
+          <property name="leftMargin">
+           <number>10</number>
+          </property>
+          <property name="rightMargin">
+           <number>10</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="stopProcessBtn">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>STOP</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSlider" name="frameSlider">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="frameNum">
+            <property name="text">
+             <string>0</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_13">
+            <property name="text">
+             <string>/</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="maxFrameNum">
+            <property name="text">
+             <string>N</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0">
+       <property name="spacing">
+        <number>7</number>
+       </property>
        <property name="leftMargin">
         <number>2</number>
        </property>
@@ -231,47 +161,182 @@
         <number>2</number>
        </property>
        <item>
-        <widget class="QGroupBox" name="mediaGBox">
-         <property name="title">
-          <string>Media</string>
+        <layout class="QVBoxLayout" name="verticalLayout_9">
+         <property name="spacing">
+          <number>2</number>
          </property>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="1" column="1">
-           <widget class="QToolButton" name="loadVideoBtn">
-            <property name="text">
-             <string>...</string>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QGroupBox" name="mediaGBox">
+           <property name="title">
+            <string>Media</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_2">
+            <property name="spacing">
+             <number>5</number>
             </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QToolButton" name="loadCacheBtn">
-            <property name="text">
-             <string>...</string>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>Input Video:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_10">
+              <property name="text">
+               <string>Cache Data:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout_9">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <property name="sizeConstraint">
+               <enum>QLayout::SetDefaultConstraint</enum>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLineEdit" name="inputVideoFileLabel"/>
+              </item>
+              <item>
+               <widget class="QToolButton" name="loadVideoBtn">
+                <property name="text">
+                 <string>...</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="2" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout_10">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLineEdit" name="cacheDataLabel"/>
+              </item>
+              <item>
+               <widget class="QToolButton" name="loadCacheBtn">
+                <property name="text">
+                 <string>...</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox">
+           <property name="title">
+            <string>Masking</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_5">
+            <property name="leftMargin">
+             <number>5</number>
             </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="inputVideoFileLabel"/>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_9">
-            <property name="text">
-             <string>Input Video:</string>
+            <property name="topMargin">
+             <number>5</number>
             </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="cacheDataLabel"/>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_10">
-            <property name="text">
-             <string>Cache Data:</string>
+            <property name="rightMargin">
+             <number>5</number>
             </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+            <property name="bottomMargin">
+             <number>5</number>
+            </property>
+            <property name="spacing">
+             <number>5</number>
+            </property>
+            <item row="3" column="2">
+             <widget class="QPushButton" name="saveMaskBtn">
+              <property name="text">
+               <string>Save</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QPushButton" name="resetMaskBtn">
+              <property name="text">
+               <string>Reset</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QPushButton" name="drawMaskBtn">
+              <property name="text">
+               <string>Draw</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_19">
+              <property name="text">
+               <string>Mask File:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_17">
+              <property name="text">
+               <string>Stroke Size:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1" colspan="2">
+             <widget class="QSpinBox" name="maskStokeSpn">
+              <property name="maximum">
+               <number>200</number>
+              </property>
+              <property name="value">
+               <number>50</number>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1" colspan="2">
+             <layout class="QHBoxLayout" name="horizontalLayout_8">
+              <property name="spacing">
+               <number>1</number>
+              </property>
+              <item>
+               <widget class="QLineEdit" name="maskFileLbl">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="setMaskFileBtn">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>...</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <widget class="QGroupBox" name="inferenceGBox">
@@ -283,7 +348,22 @@
          </property>
          <layout class="QFormLayout" name="formLayout">
           <property name="horizontalSpacing">
-           <number>20</number>
+           <number>5</number>
+          </property>
+          <property name="verticalSpacing">
+           <number>5</number>
+          </property>
+          <property name="leftMargin">
+           <number>8</number>
+          </property>
+          <property name="topMargin">
+           <number>8</number>
+          </property>
+          <property name="rightMargin">
+           <number>8</number>
+          </property>
+          <property name="bottomMargin">
+           <number>8</number>
           </property>
           <item row="0" column="0">
            <widget class="QLabel" name="modelLabel">
@@ -301,10 +381,37 @@
             </item>
            </widget>
           </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="iOUThresholdLabel_2">
+            <property name="text">
+             <string>Cosine Distance:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="cosineDistSpn">
+            <property name="decimals">
+             <number>1</number>
+            </property>
+            <property name="value">
+             <double>0.400000000000000</double>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="0">
            <widget class="QLabel" name="iOUThresholdLabel">
             <property name="text">
              <string>IOU Threshold:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDoubleSpinBox" name="iouThreshSpn">
+            <property name="decimals">
+             <number>2</number>
+            </property>
+            <property name="value">
+             <double>0.450000000000000</double>
             </property>
            </widget>
           </item>
@@ -359,16 +466,6 @@
             </item>
            </layout>
           </item>
-          <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="iouThreshSpn">
-            <property name="decimals">
-             <number>2</number>
-            </property>
-            <property name="value">
-             <double>0.450000000000000</double>
-            </property>
-           </widget>
-          </item>
           <item row="6" column="1">
            <widget class="QPushButton" name="startInferenceBtn">
             <property name="text">
@@ -376,115 +473,251 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="iOUThresholdLabel_2">
-            <property name="text">
-             <string>Cosine Distance:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="cosineDistSpn">
-            <property name="decimals">
-             <number>1</number>
-            </property>
-            <property name="value">
-             <double>0.400000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="9" column="1">
-           <widget class="QSpinBox" name="maskStokeSpn">
-            <property name="maximum">
-             <number>200</number>
-            </property>
-            <property name="value">
-             <number>50</number>
-            </property>
-           </widget>
-          </item>
-          <item row="9" column="0">
-           <widget class="QLabel" name="label_17">
-            <property name="text">
-             <string>Mask Stroke Thickness:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="1">
-           <widget class="QPushButton" name="resetMaskBtn">
-            <property name="text">
-             <string>Reset Mask</string>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="0">
-           <widget class="QPushButton" name="drawMaskBtn">
-            <property name="text">
-             <string>Draw Mask</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="countingGBox">
+        <widget class="QGroupBox" name="CountingGBox">
          <property name="title">
           <string>Counting</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_4">
-          <property name="leftMargin">
-           <number>5</number>
-          </property>
-          <property name="topMargin">
-           <number>5</number>
-          </property>
-          <property name="rightMargin">
-           <number>5</number>
-          </property>
-          <property name="bottomMargin">
-           <number>5</number>
-          </property>
+         <layout class="QVBoxLayout" name="verticalLayout_8">
           <property name="spacing">
            <number>2</number>
           </property>
-          <item row="4" column="2">
-           <widget class="QSpinBox" name="skipFrameFilterSpn">
-            <property name="value">
-             <number>10</number>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="4">
-           <widget class="QComboBox" name="countMethodCmb">
+          <property name="leftMargin">
+           <number>8</number>
+          </property>
+          <property name="topMargin">
+           <number>8</number>
+          </property>
+          <property name="rightMargin">
+           <number>8</number>
+          </property>
+          <property name="bottomMargin">
+           <number>8</number>
+          </property>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
             <item>
-             <property name="text">
-              <string>Vector</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Finish Line</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>Max Skipped Frames</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="0" colspan="5">
-           <layout class="QHBoxLayout" name="horizontalLayout_6">
-            <item>
-             <widget class="QPushButton" name="countBtn">
+             <widget class="QLabel" name="label_16">
               <property name="text">
-               <string>Quick Count</string>
+               <string>Method:</string>
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QComboBox" name="countMethodCmb">
+              <property name="currentText">
+               <string>Finish Line</string>
+              </property>
+              <property name="currentIndex">
+               <number>1</number>
+              </property>
+              <item>
+               <property name="text">
+                <string>Vector</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Finish Line</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QStackedWidget" name="countingMethodSwitcher">
+            <property name="currentIndex">
+             <number>1</number>
+            </property>
+            <widget class="QWidget" name="vectorPage">
+             <layout class="QGridLayout" name="gridLayout_3">
+              <property name="leftMargin">
+               <number>5</number>
+              </property>
+              <property name="topMargin">
+               <number>5</number>
+              </property>
+              <property name="rightMargin">
+               <number>5</number>
+              </property>
+              <property name="bottomMargin">
+               <number>5</number>
+              </property>
+              <property name="spacing">
+               <number>5</number>
+              </property>
+              <item row="2" column="2">
+               <widget class="QSpinBox" name="widthFilterVectorSpn">
+                <property name="maximum">
+                 <number>1000</number>
+                </property>
+                <property name="value">
+                 <number>192</number>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QDoubleSpinBox" name="xFilterVectorSpn">
+                <property name="decimals">
+                 <number>0</number>
+                </property>
+                <property name="minimum">
+                 <double>-1000.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>1000.000000000000000</double>
+                </property>
+                <property name="value">
+                 <double>-258.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLabel" name="label_12">
+                <property name="text">
+                 <string>Y:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_5">
+                <property name="text">
+                 <string>Travel Distance (pixels)</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_14">
+                <property name="text">
+                 <string>Filter Vector Width</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="label_11">
+                <property name="text">
+                 <string>X:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_6">
+                <property name="text">
+                 <string>Max Skipped Frames</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <widget class="QSpinBox" name="distFilterSpn">
+                <property name="maximum">
+                 <number>1000</number>
+                </property>
+                <property name="value">
+                 <number>440</number>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="2">
+               <widget class="QSpinBox" name="skipFrameFilterSpn">
+                <property name="value">
+                 <number>10</number>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>Filter Vector (pixels)</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QCheckBox" name="visualizeChk">
+                <property name="text">
+                 <string>Show Vector</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QDoubleSpinBox" name="yFilterVectorSpn">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="decimals">
+                 <number>0</number>
+                </property>
+                <property name="minimum">
+                 <double>-1000.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>1000.000000000000000</double>
+                </property>
+                <property name="value">
+                 <double>357.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0" alignment="Qt::AlignHCenter">
+               <widget class="QLabel" name="vectorDirectionLbl">
+                <property name="styleSheet">
+                 <string notr="true">color: rgb(252, 1, 7);</string>
+                </property>
+                <property name="text">
+                 <string>DOWN</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="finishLinePage">
+             <layout class="QGridLayout" name="gridLayout_4">
+              <item row="0" column="1">
+               <widget class="QSpinBox" name="finishLineFramesSpn">
+                <property name="maximum">
+                 <number>200</number>
+                </property>
+                <property name="value">
+                 <number>5</number>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QCheckBox" name="finishLineChk">
+                <property name="text">
+                 <string>Show Finish Line</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_18">
+                <property name="text">
+                 <string>frames to count:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <spacer name="verticalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
             <item>
              <widget class="QPushButton" name="countAnalyzeBtn">
               <property name="text">
@@ -492,115 +725,14 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QPushButton" name="countBtn">
+              <property name="text">
+               <string>Quick Count</string>
+              </property>
+             </widget>
+            </item>
            </layout>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLabel" name="label_11">
-            <property name="text">
-             <string>X:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2">
-           <widget class="QSpinBox" name="distFilterSpn">
-            <property name="maximum">
-             <number>1000</number>
-            </property>
-            <property name="value">
-             <number>440</number>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_14">
-            <property name="text">
-             <string>Filter Vector Width</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="4">
-           <widget class="QDoubleSpinBox" name="yFilterVectorSpn">
-            <property name="decimals">
-             <number>0</number>
-            </property>
-            <property name="minimum">
-             <double>-1000.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>1000.000000000000000</double>
-            </property>
-            <property name="value">
-             <double>357.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_16">
-            <property name="text">
-             <string>Method:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QSpinBox" name="widthFilterVectorSpn">
-            <property name="maximum">
-             <number>1000</number>
-            </property>
-            <property name="value">
-             <number>192</number>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Travel Distance (pixels)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Filter Vector (pixels)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0" colspan="5">
-           <widget class="QCheckBox" name="finishLineChk">
-            <property name="text">
-             <string>Show Finish Line</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QDoubleSpinBox" name="xFilterVectorSpn">
-            <property name="decimals">
-             <number>0</number>
-            </property>
-            <property name="minimum">
-             <double>-1000.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>1000.000000000000000</double>
-            </property>
-            <property name="value">
-             <double>-258.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3">
-           <widget class="QLabel" name="label_12">
-            <property name="text">
-             <string>Y:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0" colspan="5">
-           <widget class="QCheckBox" name="visualizeChk">
-            <property name="text">
-             <string>Show Vector</string>
-            </property>
-           </widget>
           </item>
          </layout>
         </widget>
@@ -768,16 +900,16 @@
            <attribute name="horizontalHeaderVisible">
             <bool>true</bool>
            </attribute>
-           <attribute name="horizontalHeaderMinimumSectionSize">
-            <number>110</number>
-           </attribute>
            <attribute name="horizontalHeaderDefaultSectionSize">
             <number>110</number>
            </attribute>
-           <attribute name="verticalHeaderMinimumSectionSize">
+           <attribute name="horizontalHeaderMinimumSectionSize">
             <number>110</number>
            </attribute>
            <attribute name="verticalHeaderDefaultSectionSize">
+            <number>110</number>
+           </attribute>
+           <attribute name="verticalHeaderMinimumSectionSize">
             <number>110</number>
            </attribute>
            <row/>
@@ -850,16 +982,16 @@
            <property name="columnCount">
             <number>2</number>
            </property>
-           <attribute name="horizontalHeaderMinimumSectionSize">
-            <number>110</number>
-           </attribute>
            <attribute name="horizontalHeaderDefaultSectionSize">
             <number>110</number>
            </attribute>
-           <attribute name="verticalHeaderMinimumSectionSize">
+           <attribute name="horizontalHeaderMinimumSectionSize">
             <number>110</number>
            </attribute>
            <attribute name="verticalHeaderDefaultSectionSize">
+            <number>110</number>
+           </attribute>
+           <attribute name="verticalHeaderMinimumSectionSize">
             <number>110</number>
            </attribute>
            <row/>
@@ -917,16 +1049,16 @@
            <property name="columnCount">
             <number>2</number>
            </property>
-           <attribute name="horizontalHeaderMinimumSectionSize">
-            <number>110</number>
-           </attribute>
            <attribute name="horizontalHeaderDefaultSectionSize">
             <number>110</number>
            </attribute>
-           <attribute name="verticalHeaderMinimumSectionSize">
+           <attribute name="horizontalHeaderMinimumSectionSize">
             <number>110</number>
            </attribute>
            <attribute name="verticalHeaderDefaultSectionSize">
+            <number>110</number>
+           </attribute>
+           <attribute name="verticalHeaderMinimumSectionSize">
             <number>110</number>
            </attribute>
            <row/>
@@ -973,12 +1105,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QVideoWidget</class>
-   <extends>QWidget</extends>
-   <header>PySide2.QtMultimediaWidgets</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>ImageView</class>
    <extends>QWidget</extends>
    <header>pyqtgraph</header>
@@ -1000,22 +1126,6 @@
     <hint type="destinationlabel">
      <x>737</x>
      <y>584</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>visualizeChk</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>yFilterVectorSpn</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>792</x>
-     <y>691</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>800</x>
-     <y>579</y>
     </hint>
    </hints>
   </connection>
@@ -1048,6 +1158,22 @@
     <hint type="destinationlabel">
      <x>720</x>
      <y>628</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>visualizeChk</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>yFilterVectorSpn</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>792</x>
+     <y>691</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>800</x>
+     <y>579</y>
     </hint>
    </hints>
   </connection>

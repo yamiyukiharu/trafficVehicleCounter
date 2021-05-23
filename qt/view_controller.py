@@ -3,7 +3,6 @@ from typing import Tuple
 from PySide2.QtCore import QPoint, QUrl, Signal, Slot
 from PySide2.QtWidgets import QFileDialog, QMessageBox, QTableWidgetItem, QWidget
 from PySide2.QtGui import QImage, QPixmap, Qt, QIcon
-from PySide2.QtMultimedia import QMediaPlayer, QMediaContent
 from qt.Ui_Form import Ui_Form
 import numpy as np
 import cv2, os, math
@@ -22,8 +21,7 @@ class ViewController(QWidget, Ui_Form):
         self.outputVideoFile = ''
         self.outputDataFile = ''
         self.cacheDataFile = ''
-        self.mediaPlayer = QMediaPlayer(self)
-        self.mediaPlayer.setVideoOutput(self.videoFrame)
+        self.maskFile = ''
         self.carPreviewTable.setHorizontalHeaderLabels(['Preview', 'ID'])
         self.truckPreviewTable.setHorizontalHeaderLabels(['Preview', 'ID'])
         self.frameView.ui.histogram.hide()
@@ -36,7 +34,6 @@ class ViewController(QWidget, Ui_Form):
         self.visualizeMarkerEnd = QPoint(500,500)
         self.visualizeMarker = pg.LineROI(self.visualizeMarkerStart, self.visualizeMarkerEnd, 50)
         self.finishLine = pg.RectROI((200,200), (200,200), rotatable=True, resizable=True)
-        # self.finishLine.addRotateHandle((0.5,0), (0,0))
 
         self.setupSignalSlots()
         # development
@@ -46,10 +43,6 @@ class ViewController(QWidget, Ui_Form):
 
     def setupSignalSlots(self):
         self.loadVideoBtn.clicked.connect(self.openVideoFile)
-        self.playBtn.clicked.connect(self.toggleVideoState)
-        self.mediaPlayer.durationChanged.connect(self.setVideoSliderRange)
-        self.mediaPlayer.positionChanged.connect(self.setVideoTime)
-        self.videoSlider.valueChanged.connect(self.mediaPlayer.setPosition)
 
         self.setOutputFileBtn.clicked.connect(self.getOutputFileName)
         self.startInferenceBtn.clicked.connect(self.startInference)
@@ -66,7 +59,11 @@ class ViewController(QWidget, Ui_Form):
         self.stopProcessBtn.clicked.connect(self.stopProcess)
         self.drawMaskBtn.clicked.connect(self.drawMask)
         self.resetMaskBtn.clicked.connect(self.resetMask)
+        self.setMaskFileBtn.clicked.connect(self.openMaskFile)
+        self.saveMaskBtn.clicked.connect(self.saveMask)
 
+        self.yFilterVectorSpn.valueChanged.connect(self.updateVectorDirectionLabel)
+        self.countMethodCmb.currentIndexChanged.connect(self.countingMethodSwitcher.setCurrentIndex)
         self.frameSlider.valueChanged.connect(self.model.previewFrame)
         self.visualizeChk.toggled.connect(self.visualizeCountingParam)
         self.finishLineChk.toggled.connect(self.showFinishLine)
@@ -88,17 +85,33 @@ class ViewController(QWidget, Ui_Form):
         if file_path != '':
             self.setOutputFile(file_path)
 
+    def openMaskFile(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, "Open Mask File", '', "hdf (*.h5)")
+        if file_path != '':
+            self.model.setMaskFile(file_path)
+            self.maskFile = file_path
+            self.maskFileLbl.setText(self.maskFile)
+            self.imgMask = self.model.getMask()
+            self.maskPreview = cv2.bitwise_and(self.frameView.image, self.frameView.image, mask=self.imgMask)
+            # self.showMaskOnFrame()
+
+    def saveMask(self):
+        if self.imgMask is None:
+            QMessageBox.warning(self, 'Error', 'Mask not drawn yet!')
+            return
+        if self.maskFile == '':
+            file_path, _ = QFileDialog().getSaveFileName()
+            if file_path != '':        
+                self.maskFile = file_path
+                self.maskFileLbl.setText(self.maskFile)    
+        self.model.saveMask(self.maskFile, self.imgMask)
+
 #======================= Setting Data sources ========================
 
     def setVideo(self, file_path):
         self.inputVideoFile = file_path
         self.inputVideoFileLabel.setText(file_path)
         self.model.setInputVideoPath(self.inputVideoFile)
-
-        # content = QMediaContent(QUrl.fromLocalFile(file_path))
-        # self.mediaPlayer.setMedia(content)
-        # self.mediaPlayer.play()
-        # self.mediaPlayer.pause()
 
         # set the output file name to match as well
         self.setOutputFile(file_path)
@@ -115,36 +128,7 @@ class ViewController(QWidget, Ui_Form):
     def setCacheData(self, file_path):
         self.cacheDataFile = file_path
         self.cacheDataLabel.setText(file_path)
-        self.model.setCacheDataPath(file_path)
-
-#=================== Video Playback Functions ========================
-
-    def setVideoSliderRange(self, duration):
-        self.videoSlider.setMaximum(duration)
-        if duration >= 0:
-            self.videoMaxTime.setText(self._hhmmss(duration))
-
-    def setVideoTime(self, position):
-        if position >= 0:
-            self.videoTime.setText(self._hhmmss(position))
-
-        # Disable the events to prevent updating triggering a setPosition event (can cause shuttering).
-        self.videoSlider.blockSignals(True)
-        self.videoSlider.setValue(position)
-        self.videoSlider.blockSignals(False)
-
-    def _hhmmss(self, ms):
-        h, r = divmod(ms, 360000)
-        m, r = divmod(r, 60000)
-        s, _ = divmod(r, 1000)
-        return ("%d:%02d:%02d" % (h,m,s)) if h else ("%d:%02d" % (m,s))
-
-    def toggleVideoState(self):
-        if self.mediaPlayer.MediaStatus() != QMediaPlayer.NoMedia:
-            if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
-                self.mediaPlayer.pause()
-            else:
-                self.mediaPlayer.play()
+        self.model.setCacheDataPath(file_path)        
 
 #================= Vehicle Counting Functions =========================
 
@@ -163,22 +147,6 @@ class ViewController(QWidget, Ui_Form):
             # add arrow with length defined in distance
             self.frameView.addItem(self.visualizeMarker)
             self.visualizeMarker.sigRegionChangeFinished.connect(self.updateCountingParams)
-
-            # positions = self.visualizeMarker.getSceneHandlePositions()
-            # start = positions[0][1]
-            # end = positions[1][1]
-            # center = start + (end - start)/2
-            # cx = center.x()
-            # cy = center.y()
-            # w = self.widthFilterVectorSpn.value()
-            # dx = self.xFilterVectorSpn.value() / 2
-            # hypo = self.distFilterSpn.value()/ 2
-            # dy = math.sqrt(hypo*hypo - dx*dx)
-            # if self.yFilterVectorSpn.value() < 0:
-            #     dy = -dy
-
-            # pos_start = QPoint(cx - dx, cy + dy)
-            # pos_end = QPoint(cx + dx, cy - dy )
 
         else:
             self.frameView.view.removeItem(self.visualizeMarker)
@@ -211,6 +179,12 @@ class ViewController(QWidget, Ui_Form):
         self.xFilterVectorSpn.setValue(dx)
         self.yFilterVectorSpn.setValue(dy)
         self.widthFilterVectorSpn.setValue(width)
+
+    def updateVectorDirectionLabel(self):
+        if self.yFilterVectorSpn.value() > 0:
+            self.vectorDirectionLbl.setText('DOWN')
+        else:
+            self.vectorDirectionLbl.setText('UP')
 
     def startCounting(self):
         if self.cacheDataFile != '':
@@ -259,11 +233,14 @@ class ViewController(QWidget, Ui_Form):
         self.model.stopCountingAnalysis()
         self.enableControls(True)
 
+#================== Masking Functions ======================
+
     def resetMask(self):
         if self.frameView.image is None:
             QMessageBox.warning(self, 'Error', 'No image to mask!')
             return
-        self.maskPreview = self.frameView.image
+        self.maskPreview = self.frameView.image.copy()
+        cv2.imshow('Mask', self.maskPreview)
         self.imgMask = np.ones(self.frameView.image.shape[:2], dtype = np.uint8)
 
     def drawMask(self):
@@ -273,27 +250,28 @@ class ViewController(QWidget, Ui_Form):
         cv2.namedWindow('Mask')
         cv2.setMouseCallback('Mask', self.maskMouse)
         cv2.imshow('Mask', self.maskPreview)
-            
+
+    def showMaskOnFrame(self):
+        img = cv2.bitwise_and(self.frameView.image, self.frameView.image, mask=self.imgMask)
+        self.frameView.setImage(img)            
 
     def maskMouse(self, event, x, y, flags, param):
         if event == cv2.EVENT_LBUTTONDOWN:
             self.drawing = True
-            cv2.circle(self.maskPreview, (x,y), self.maskStokeSpn.value(), [0,255,0], -1)
+            cv2.circle(self.maskPreview, (x,y), self.maskStokeSpn.value(), [0,0,0], -1)
             cv2.circle(self.imgMask, (x,y), self.maskStokeSpn.value(), 0, -1)
 
         elif event == cv2.EVENT_MOUSEMOVE:
             if self.drawing == True:
-                cv2.circle(self.maskPreview, (x, y), self.maskStokeSpn.value(), [0,255,0], -1)
+                cv2.circle(self.maskPreview, (x, y), self.maskStokeSpn.value(), [0,0,0], -1)
                 cv2.circle(self.imgMask, (x, y), self.maskStokeSpn.value(), 0, -1)
 
         elif event == cv2.EVENT_LBUTTONUP:
             if self.drawing == True:
                 self.drawing = False
-                cv2.circle(self.maskPreview, (x, y), self.maskStokeSpn.value(), [0,255,0], -1)
+                cv2.circle(self.maskPreview, (x, y), self.maskStokeSpn.value(), [0,0,0], -1)
                 cv2.circle(self.imgMask, (x, y), self.maskStokeSpn.value(), 0, -1)
-                img = cv2.bitwise_and(self.frameView.image, self.frameView.image, mask=self.imgMask)
-                self.frameView.setImage(img)
-                print(self.imgMask.shape)
+                # self.showMaskOnFrame()
         cv2.imshow('Mask', self.maskPreview)
         
 
@@ -313,12 +291,10 @@ class ViewController(QWidget, Ui_Form):
                 'filt_width'    : self.widthFilterVectorSpn.value(),
                 'filt_dist'     : self.distFilterSpn.value(),
                 'filt_frames'   : self.skipFrameFilterSpn.value(),
+                'finish_frames' : self.finishLineFramesSpn.value(),
                 'finish_line'   : self.getFinishLineBounds(),
             }
         )
-
-        # change video display to frames updated by Qlabel
-        self.videoSwitcher.setCurrentIndex(1)
 
         # clear the preview table
         self.carPreviewTable.clear()

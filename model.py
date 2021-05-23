@@ -58,6 +58,7 @@ class Model(QObject):
         self.input_video_path = ''
         self.output_video_path = ''
         self.output_data_path = ''
+        self.mask_path = ''
         self.cache_data = None
         self.vid = None
         self.detected_vehicles = None
@@ -102,6 +103,22 @@ class Model(QObject):
 
         self.max_frame_update_signal.emit(self.cache_data.shape[0])        
 
+    def setMaskFile(self, path):
+        self.mask_path = path
+        mask = h5py.File(self.mask_path, 'r')
+        mask = mask.get('mask')
+        self.imgMask = np.array(mask)
+
+    def saveMask(self, path, mask):
+        self.imgMask = mask
+        print(mask)
+        data = h5py.File(path, 'w')
+        data.create_dataset('mask', data=self.imgMask)
+        data.close()
+
+    def getMask(self):
+        return self.imgMask
+
     def setParams(self, params:dict):
         self.imgMask = params['mask']
         self.iou_thresh = params['iou_thresh']
@@ -112,6 +129,7 @@ class Model(QObject):
         self.filt_width = params['filt_width']
         self.filt_dist = params['filt_dist']
         self.filt_frame = params['filt_frames']
+        self.finishFrames = params['finish_frames']
         self.finishLine = params['finish_line']
         self.count_method = params['count_method']
 
@@ -189,7 +207,7 @@ class Model(QObject):
             if (cx > bx) and (cx < bx + bw) and (cy > by) and (cy < by + bh):
                 tracker_dict[uid]['dist'] += 1
 
-                if tracker_dict[uid]['dist'] > self.filt_frame:
+                if tracker_dict[uid]['dist'] > self.finishFrames:
                     tracker_dict[uid]['counted'] = True
                     cnt = sum([param['counted'] for id, param in tracker_dict.items()])
                     img = self.getVehicleImage(detection, frame)
