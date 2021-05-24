@@ -4,6 +4,10 @@
 # Description  
 
 This is a software written in python for use in counting vehicles from a pre-recorded traffic camera video.
+
+Demo video:
+https://drive.google.com/file/d/1GImSkQ2CWaAPqje9_UJGZ80fDWFxbJfV/view
+
 <br/><br/>
 
 # Technologies Used
