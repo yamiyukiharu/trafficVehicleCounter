@@ -4,23 +4,26 @@ import cv2, h5py, math
 import numpy as np
 import matplotlib.pyplot as plt
 
+# YOLOv4 & DeepSORT code is taken from : 
+# https://github.com/theAIGuysCode/yolov4-deepsort
+
 # deep sort imports
 from deep_sort import preprocessing, nn_matching
 from deep_sort import tracker
 from deep_sort.detection import Detection
 from deep_sort.tracker import Tracker
 
-# import tensorflow as tf
-# physical_devices = tf.config.experimental.list_physical_devices('GPU')
-# if len(physical_devices) > 0:
-#     tf.config.experimental.set_memory_growth(physical_devices[0], True)
-# from tensorflow.python.saved_model import tag_constants
-# from tensorflow.compat.v1 import ConfigProto
-# from tensorflow.compat.v1 import Session
-# from core.yolov4 import filter_boxes
-# from core.config import cfg
-# import core.utils as utils
-# from tools import generate_detections as gdet
+import tensorflow as tf
+physical_devices = tf.config.experimental.list_physical_devices('GPU')
+if len(physical_devices) > 0:
+    tf.config.experimental.set_memory_growth(physical_devices[0], True)
+from tensorflow.python.saved_model import tag_constants
+from tensorflow.compat.v1 import ConfigProto
+from tensorflow.compat.v1 import Session
+from core.yolov4 import filter_boxes
+from core.config import cfg
+import core.utils as utils
+from tools import generate_detections as gdet
 
 MAX_DETECTION_NUM = 50
 nn_budget = None
@@ -111,7 +114,6 @@ class Model(QObject):
 
     def saveMask(self, path, mask):
         self.imgMask = mask
-        print(mask)
         data = h5py.File(path, 'w')
         data.create_dataset('mask', data=self.imgMask)
         data.close()
@@ -344,7 +346,8 @@ class Model(QObject):
 
     @Slot()
     def startInference(self):
-        if not self.validateInputFiles():
+        if self.vid is None:
+            self.error_signal.emit('No input video specified')
             return
 
         self.stop_inference = False
@@ -535,7 +538,7 @@ class Model(QObject):
         height = y_max - y_min
 
         img = frame[y_min:y_max, x_min:x_max]
-        return np.ascontiguousarray(img).copy()
+        return np.ascontiguousarray(img)
 
     def getClassId(self, class_name:str) -> int:
         id = class_id_map.get(class_name)

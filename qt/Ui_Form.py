@@ -152,38 +152,38 @@ class Ui_Form(object):
 
         self.verticalLayout_9.addWidget(self.mediaGBox)
 
-        self.groupBox = QGroupBox(Form)
-        self.groupBox.setObjectName(u"groupBox")
-        self.gridLayout_5 = QGridLayout(self.groupBox)
+        self.maskingGBox = QGroupBox(Form)
+        self.maskingGBox.setObjectName(u"maskingGBox")
+        self.gridLayout_5 = QGridLayout(self.maskingGBox)
         self.gridLayout_5.setSpacing(5)
         self.gridLayout_5.setObjectName(u"gridLayout_5")
         self.gridLayout_5.setContentsMargins(5, 5, 5, 5)
-        self.saveMaskBtn = QPushButton(self.groupBox)
+        self.saveMaskBtn = QPushButton(self.maskingGBox)
         self.saveMaskBtn.setObjectName(u"saveMaskBtn")
 
         self.gridLayout_5.addWidget(self.saveMaskBtn, 3, 2, 1, 1)
 
-        self.resetMaskBtn = QPushButton(self.groupBox)
+        self.resetMaskBtn = QPushButton(self.maskingGBox)
         self.resetMaskBtn.setObjectName(u"resetMaskBtn")
 
         self.gridLayout_5.addWidget(self.resetMaskBtn, 3, 0, 1, 1)
 
-        self.drawMaskBtn = QPushButton(self.groupBox)
+        self.drawMaskBtn = QPushButton(self.maskingGBox)
         self.drawMaskBtn.setObjectName(u"drawMaskBtn")
 
         self.gridLayout_5.addWidget(self.drawMaskBtn, 3, 1, 1, 1)
 
-        self.label_19 = QLabel(self.groupBox)
+        self.label_19 = QLabel(self.maskingGBox)
         self.label_19.setObjectName(u"label_19")
 
         self.gridLayout_5.addWidget(self.label_19, 2, 0, 1, 1)
 
-        self.label_17 = QLabel(self.groupBox)
+        self.label_17 = QLabel(self.maskingGBox)
         self.label_17.setObjectName(u"label_17")
 
         self.gridLayout_5.addWidget(self.label_17, 1, 0, 1, 1)
 
-        self.maskStokeSpn = QSpinBox(self.groupBox)
+        self.maskStokeSpn = QSpinBox(self.maskingGBox)
         self.maskStokeSpn.setObjectName(u"maskStokeSpn")
         self.maskStokeSpn.setMaximum(200)
         self.maskStokeSpn.setValue(50)
@@ -193,13 +193,13 @@ class Ui_Form(object):
         self.horizontalLayout_8 = QHBoxLayout()
         self.horizontalLayout_8.setSpacing(1)
         self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
-        self.maskFileLbl = QLineEdit(self.groupBox)
+        self.maskFileLbl = QLineEdit(self.maskingGBox)
         self.maskFileLbl.setObjectName(u"maskFileLbl")
         self.maskFileLbl.setReadOnly(True)
 
         self.horizontalLayout_8.addWidget(self.maskFileLbl)
 
-        self.setMaskFileBtn = QToolButton(self.groupBox)
+        self.setMaskFileBtn = QToolButton(self.maskingGBox)
         self.setMaskFileBtn.setObjectName(u"setMaskFileBtn")
         sizePolicy2 = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
         sizePolicy2.setHorizontalStretch(0)
@@ -213,7 +213,7 @@ class Ui_Form(object):
         self.gridLayout_5.addLayout(self.horizontalLayout_8, 2, 1, 1, 2)
 
 
-        self.verticalLayout_9.addWidget(self.groupBox)
+        self.verticalLayout_9.addWidget(self.maskingGBox)
 
 
         self.horizontalLayout_2.addLayout(self.verticalLayout_9)
@@ -652,7 +652,7 @@ class Ui_Form(object):
         self.label_10.setText(QCoreApplication.translate("Form", u"Cache Data:", None))
         self.loadVideoBtn.setText(QCoreApplication.translate("Form", u"...", None))
         self.loadCacheBtn.setText(QCoreApplication.translate("Form", u"...", None))
-        self.groupBox.setTitle(QCoreApplication.translate("Form", u"Masking", None))
+        self.maskingGBox.setTitle(QCoreApplication.translate("Form", u"Masking", None))
         self.saveMaskBtn.setText(QCoreApplication.translate("Form", u"Save", None))
         self.resetMaskBtn.setText(QCoreApplication.translate("Form", u"Reset", None))
         self.drawMaskBtn.setText(QCoreApplication.translate("Form", u"Draw", None))

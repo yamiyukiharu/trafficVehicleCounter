@@ -241,7 +241,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox">
+          <widget class="QGroupBox" name="maskingGBox">
            <property name="title">
             <string>Masking</string>
            </property>
@@ -900,16 +900,16 @@
            <attribute name="horizontalHeaderVisible">
             <bool>true</bool>
            </attribute>
-           <attribute name="horizontalHeaderDefaultSectionSize">
-            <number>110</number>
-           </attribute>
            <attribute name="horizontalHeaderMinimumSectionSize">
             <number>110</number>
            </attribute>
-           <attribute name="verticalHeaderDefaultSectionSize">
+           <attribute name="horizontalHeaderDefaultSectionSize">
             <number>110</number>
            </attribute>
            <attribute name="verticalHeaderMinimumSectionSize">
+            <number>110</number>
+           </attribute>
+           <attribute name="verticalHeaderDefaultSectionSize">
             <number>110</number>
            </attribute>
            <row/>
@@ -982,16 +982,16 @@
            <property name="columnCount">
             <number>2</number>
            </property>
-           <attribute name="horizontalHeaderDefaultSectionSize">
-            <number>110</number>
-           </attribute>
            <attribute name="horizontalHeaderMinimumSectionSize">
             <number>110</number>
            </attribute>
-           <attribute name="verticalHeaderDefaultSectionSize">
+           <attribute name="horizontalHeaderDefaultSectionSize">
             <number>110</number>
            </attribute>
            <attribute name="verticalHeaderMinimumSectionSize">
+            <number>110</number>
+           </attribute>
+           <attribute name="verticalHeaderDefaultSectionSize">
             <number>110</number>
            </attribute>
            <row/>
@@ -1049,16 +1049,16 @@
            <property name="columnCount">
             <number>2</number>
            </property>
-           <attribute name="horizontalHeaderDefaultSectionSize">
-            <number>110</number>
-           </attribute>
            <attribute name="horizontalHeaderMinimumSectionSize">
             <number>110</number>
            </attribute>
-           <attribute name="verticalHeaderDefaultSectionSize">
+           <attribute name="horizontalHeaderDefaultSectionSize">
             <number>110</number>
            </attribute>
            <attribute name="verticalHeaderMinimumSectionSize">
+            <number>110</number>
+           </attribute>
+           <attribute name="verticalHeaderDefaultSectionSize">
             <number>110</number>
            </attribute>
            <row/>

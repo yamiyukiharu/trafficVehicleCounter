@@ -36,10 +36,6 @@ class ViewController(QWidget, Ui_Form):
         self.finishLine = pg.RectROI((200,200), (200,200), rotatable=True, resizable=True)
 
         self.setupSignalSlots()
-        # development
-        
-        self.setVideo(os.getcwd() + '/data/video/VehicleTest.mp4')
-        self.setCacheData(os.getcwd() + '/data/video/VehicleTest.h5')
 
     def setupSignalSlots(self):
         self.loadVideoBtn.clicked.connect(self.openVideoFile)
@@ -92,7 +88,9 @@ class ViewController(QWidget, Ui_Form):
             self.maskFile = file_path
             self.maskFileLbl.setText(self.maskFile)
             self.imgMask = self.model.getMask()
-            self.maskPreview = cv2.bitwise_and(self.frameView.image, self.frameView.image, mask=self.imgMask)
+            img = self.frameView.imageItem.image.copy()
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            self.maskPreview = cv2.bitwise_and(img, img, mask=self.imgMask)
 
     def saveMask(self):
         if self.imgMask is None:
@@ -235,12 +233,14 @@ class ViewController(QWidget, Ui_Form):
 #================== Masking Functions ======================
 
     def resetMask(self):
-        if self.frameView.image is None:
+        if self.frameView.imageItem.image is None:
             QMessageBox.warning(self, 'Error', 'No image to mask!')
             return
-        self.maskPreview = self.frameView.image.copy()
+        img = self.frameView.imageItem.image.copy()
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        self.maskPreview = img
         cv2.imshow('Mask', self.maskPreview)
-        self.imgMask = np.ones(self.frameView.image.shape[:2], dtype = np.uint8)
+        self.imgMask = np.ones(self.frameView.imageItem.image.shape[:2], dtype = np.uint8)
 
     def drawMask(self):
         if self.imgMask is None:
@@ -312,6 +312,7 @@ class ViewController(QWidget, Ui_Form):
         self.mediaGBox.setEnabled(state)
         self.inferenceGBox.setEnabled(state)
         self.countingGBox.setEnabled(state)
+        self.maskingGBox.setEnabled(state)
         self.frameSlider.setEnabled(state)
         self.stopProcessBtn.setEnabled(not state)
 
@@ -327,7 +328,7 @@ class ViewController(QWidget, Ui_Form):
     def updateFrame(self, cv_img, frame_num):
         self.frameView.view.setXRange(0, cv_img.shape[1])
         self.frameView.view.setYRange(0, cv_img.shape[0])
-        self.frameView.setImage(cv_img)
+        self.frameView.imageItem.setImage(cv_img)
         self.frameNum.setText(str(frame_num))
     
     def convert_cv_qt(self, rgb_image, width, height):
